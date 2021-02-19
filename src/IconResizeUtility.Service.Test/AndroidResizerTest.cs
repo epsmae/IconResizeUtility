@@ -93,11 +93,11 @@ namespace IconResizeUtility.Service.Test
             DirectoryInfo srcFolderInfo = new DirectoryInfo(testDataDir);
             foreach (FileInfo file in srcFolderInfo.EnumerateFiles())
             {
-                foreach (string folder in AndroidResizeService.ResolutionFolders.Keys.ToArray())
+                foreach (string folder in AndroidResizeService.ResFolderAssociation.Keys.ToArray())
                 {
                     foreach (int expectedResolution in expectedResolutions)
                     {
-                        int expectedSize = (int) (expectedResolution * AndroidResizeService.ResolutionFolders[folder]);
+                        int expectedSize = (int) (expectedResolution * AndroidResizeService.ResFolderAssociation[folder]);
                         AssertContainsIconSize(outDir, folder, file.Name, postfixSize, expectedPrefix, expectedResolution,
                             expectedSize);
                     }
@@ -109,13 +109,13 @@ namespace IconResizeUtility.Service.Test
         {
             int srcFileCount = Directory.EnumerateFiles(srcDataDir).Count();
             int iconCount = Directory.EnumerateFiles(outDir, "*", SearchOption.AllDirectories).Count();
-            int expectedCount = srcFileCount * expectedResolutions.Count * AndroidResizeService.ResolutionFolders.Count;
+            int expectedCount = srcFileCount * expectedResolutions.Count * AndroidResizeService.ResFolderAssociation.Count;
             Assert.AreEqual(expectedCount, iconCount);
         }
 
-        private void AssertContainsIconSize(string outputDirectory, string folder, string iconName, bool postfixSize, string suffix, int size, int expectedSize)
+        private void AssertContainsIconSize(string outputDirectory, string folder, string iconName, bool postfixSize, string prefix, int size, int expectedSize)
         {
-            string adjustedName = GetIconName(iconName, postfixSize, suffix, size);
+            string adjustedName = GetIconName(iconName, postfixSize, prefix, size);
 
             string fullImagePath = Path.Combine(outputDirectory, folder, adjustedName);
 
@@ -127,7 +127,7 @@ namespace IconResizeUtility.Service.Test
             Assert.AreEqual(expectedSize, info.Width);
         }
 
-        private string GetIconName(string iconName, bool postfixSize, string suffix, int size)
+        private string GetIconName(string iconName, bool postfixSize, string prefix, int size)
         {
 
             string baseName = _renameUtility.ConvertToValidIconName(iconName);
@@ -137,9 +137,9 @@ namespace IconResizeUtility.Service.Test
                 baseName = _renameUtility.AddPostfix(baseName, $"_{size}");
             }
 
-            if (!string.IsNullOrEmpty(suffix))
+            if (!string.IsNullOrEmpty(prefix))
             {
-                baseName = _renameUtility.AddSuffix(baseName, suffix);
+                baseName = _renameUtility.AddPrefix(baseName, prefix);
             }
 
             return baseName;

@@ -29,9 +29,9 @@ namespace IconResizeUtility.Service
             return $"{name}{postfix}{extension}";
         }
 
-        public string AddSuffix(string iconName, string suffix)
+        public string AddPrefix(string iconName, string pefix)
         {
-            return $"{suffix}{iconName}";
+            return $"{pefix}{iconName}";
         }
     }
 }

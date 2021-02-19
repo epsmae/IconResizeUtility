@@ -33,13 +33,13 @@ namespace IconResizeUtility.Service.Test
         }
 
         [Test]
-        public void TestAddSuffix()
+        public void TestAddPrefix()
         {
-            string suffix = "ic_";
+            string prefix = "ic_";
             string iconName = "icon.png";
-            string expectedstring = $"{suffix}{iconName}";
+            string expectedstring = $"{prefix}{iconName}";
             
-            string result = _renameUtility.AddSuffix(iconName, suffix);
+            string result = _renameUtility.AddPrefix(iconName, prefix);
             Assert.AreEqual(expectedstring, result);
         }
 

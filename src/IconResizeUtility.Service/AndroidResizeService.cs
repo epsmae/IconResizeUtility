@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -10,10 +8,8 @@ namespace IconResizeUtility.Service
     {
         private readonly ImageResizer _resizer;
         private readonly RenameUtility _renameUtility;
-        private readonly string _cacheDirectory;
 
-
-        public static IDictionary<string, double> ResolutionFolders = new Dictionary<string, double>
+        public static IDictionary<string, double> ResFolderAssociation = new Dictionary<string, double>
         {
             {"drawable-mdpi", 1.0}, // 48*48
             {"drawable-hdpi", 1.5}, // 72*72
@@ -30,8 +26,7 @@ namespace IconResizeUtility.Service
             36,
             48
         };
-
-
+        
         public AndroidResizeService(ImageResizer resizer, RenameUtility renameUtility)
         {
             _resizer = resizer;
@@ -39,9 +34,9 @@ namespace IconResizeUtility.Service
         }
 
 
-        public void Resize(string sourcePath, string destinationPath, bool postfixSize, string suffix, IList<int> requiredSizes)
+        public void Resize(string sourcePath, string destinationPath, bool postfixSize, string prefix, IList<int> requiredSizes)
         {
-            string[] resolutionFolders = ResolutionFolders.Keys.ToArray();
+            string[] resolutionFolders = ResFolderAssociation.Keys.ToArray();
 
             EnsureDirectoriesExist(destinationPath, resolutionFolders);
 
@@ -68,14 +63,14 @@ namespace IconResizeUtility.Service
                             finalIconName = baseIconName;
                         }
 
-                        if (!string.IsNullOrEmpty(suffix))
+                        if (!string.IsNullOrEmpty(prefix))
                         {
-                            finalIconName = _renameUtility.AddSuffix(finalIconName, suffix);
+                            finalIconName = _renameUtility.AddPrefix(finalIconName, prefix);
                         }
 
                         string destinationIconPath = Path.Combine(path, finalIconName);
 
-                        int size = (int) (requiredSize * ResolutionFolders[resolutionFolder]);
+                        int size = (int) (requiredSize * ResFolderAssociation[resolutionFolder]);
 
                         _resizer.Resize(file.FullName, destinationIconPath, size, size);
                     }
