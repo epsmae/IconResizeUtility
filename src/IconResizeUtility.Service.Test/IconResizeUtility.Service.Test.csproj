@@ -13,14 +13,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="TestData\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\IconResizeUtility.Service\IconResizeUtility.Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestData\Icons\material_icon_addchar.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\Icons\material_icon_alarm.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\test_image.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
