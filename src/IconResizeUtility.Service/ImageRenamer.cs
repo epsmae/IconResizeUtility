@@ -2,11 +2,11 @@
 
 namespace IconResizeUtility.Service
 {
-    public class RenameUtility
+    public class ImageRenamer
     {
         private readonly Regex _regex;
 
-        public RenameUtility()
+        public ImageRenamer()
         {
             _regex = new Regex("[^0-9a-zA-Z_]");
         }
@@ -29,9 +29,9 @@ namespace IconResizeUtility.Service
             return $"{name}{postfix}{extension}";
         }
 
-        public string AddSuffix(string iconName, string suffix)
+        public string AddPrefix(string iconName, string pefix)
         {
-            return $"{suffix}{iconName}";
+            return $"{pefix}{iconName}";
         }
     }
 }

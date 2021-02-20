@@ -23,4 +23,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\IconResizeUtility.Service\IconResizeUtility.Service.csproj" />
+  </ItemGroup>
+
 </Project>
