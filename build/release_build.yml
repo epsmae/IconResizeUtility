@@ -8,6 +8,7 @@ trigger:
   branches:
     include:
       - master
+pr: none
 
 pool:
   vmImage: 'windows-latest'
