@@ -14,6 +14,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IconResizeUtility.App\IconResizeUtility.App.csproj" />
+    <ProjectReference Include="..\IconResizeUtility.TestInfrastructure\IconResizeUtility.TestInfrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="TestData\material_icon_bug.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\material_icon_build.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

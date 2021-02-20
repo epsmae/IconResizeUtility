@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using IconResizeUtility.TestInfrastructure;
 using NUnit.Framework;
 
 namespace IconResizeUtility.Service.Test
 {
     public class AndroidResizerTest
     {
-        private ImageResizer _imageResizer;
-        private RenameUtility _renameUtility;
+        private ResultChecker _resultChecker;
+        private AndroidResizeService _service;
 
         private string SrcDataDir
         {
@@ -33,8 +30,11 @@ namespace IconResizeUtility.Service.Test
         [SetUp]
         public void Setup()
         {
-            _imageResizer = new ImageResizer();
-            _renameUtility = new RenameUtility();
+            ImageResizer resizer = new ImageResizer();
+            RenameUtility renameUtitlity = new RenameUtility();
+            _resultChecker = new ResultChecker(resizer, renameUtitlity);
+            _service = new AndroidResizeService(resizer, renameUtitlity);
+
 
             if (Directory.Exists(OutDir))
             {
@@ -42,107 +42,43 @@ namespace IconResizeUtility.Service.Test
             }
         }
 
-
         [Test]
         public void TestResize()
         {
-            AndroidResizeService service = new AndroidResizeService(_imageResizer, _renameUtility);
-
             IList<int> expectedResolutions = AndroidResizeService.DefaultRequiredSizes;
             string expectedPrefix = "ic_";
             const bool postFixSize = true;
 
-            service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions);
+            _service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions);
 
-            AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix);
-            AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
+            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix);
+            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
         }
 
         [Test]
         public void TestResizeWithoutPrefix()
         {
-            AndroidResizeService service = new AndroidResizeService(_imageResizer, _renameUtility);
-
             IList<int> expectedResolutions = AndroidResizeService.DefaultRequiredSizes;
             string expectedPrefix = "";
             const bool postFixSize = true;
 
-            service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions);
+            _service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions);
 
-            AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix);
-            AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
+            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix);
+            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
         }
 
         [Test]
         public void TestResizeWithoutPostfix()
         {
-            AndroidResizeService service = new AndroidResizeService(_imageResizer, _renameUtility);
-
             IList<int> expectedResolutions = new List<int>{48};
             string expectedPrefix = "ic_";
             const bool postFixSize = false;
 
-            service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions);
+            _service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions);
 
-            AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix);
-            AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
-        }
-        
-        private void AssertIconsExistAndMatchSize(string testDataDir, string outDir, IList<int> expectedResolutions, bool postfixSize, string expectedPrefix)
-        {
-            DirectoryInfo srcFolderInfo = new DirectoryInfo(testDataDir);
-            foreach (FileInfo file in srcFolderInfo.EnumerateFiles())
-            {
-                foreach (string folder in AndroidResizeService.ResFolderAssociation.Keys.ToArray())
-                {
-                    foreach (int expectedResolution in expectedResolutions)
-                    {
-                        int expectedSize = (int) (expectedResolution * AndroidResizeService.ResFolderAssociation[folder]);
-                        AssertContainsIconSize(outDir, folder, file.Name, postfixSize, expectedPrefix, expectedResolution,
-                            expectedSize);
-                    }
-                }
-            }
-        }
-
-        private void AssertIconCount(string srcDataDir, string outDir, IList<int> expectedResolutions)
-        {
-            int srcFileCount = Directory.EnumerateFiles(srcDataDir).Count();
-            int iconCount = Directory.EnumerateFiles(outDir, "*", SearchOption.AllDirectories).Count();
-            int expectedCount = srcFileCount * expectedResolutions.Count * AndroidResizeService.ResFolderAssociation.Count;
-            Assert.AreEqual(expectedCount, iconCount);
-        }
-
-        private void AssertContainsIconSize(string outputDirectory, string folder, string iconName, bool postfixSize, string prefix, int size, int expectedSize)
-        {
-            string adjustedName = GetIconName(iconName, postfixSize, prefix, size);
-
-            string fullImagePath = Path.Combine(outputDirectory, folder, adjustedName);
-
-            Assert.True(File.Exists(fullImagePath));
-
-            ImageInfo info = _imageResizer.GetInfo(fullImagePath);
-
-            Assert.AreEqual(expectedSize, info.Height);
-            Assert.AreEqual(expectedSize, info.Width);
-        }
-
-        private string GetIconName(string iconName, bool postfixSize, string prefix, int size)
-        {
-
-            string baseName = _renameUtility.ConvertToValidIconName(iconName);
-
-            if (postfixSize)
-            {
-                baseName = _renameUtility.AddPostfix(baseName, $"_{size}");
-            }
-
-            if (!string.IsNullOrEmpty(prefix))
-            {
-                baseName = _renameUtility.AddPrefix(baseName, prefix);
-            }
-
-            return baseName;
+            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix);
+            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
         }
     }
 }

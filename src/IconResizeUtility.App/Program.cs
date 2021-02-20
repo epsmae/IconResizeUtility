@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.IO;
+using System.Linq;
 using System.Reflection;
+using IconResizeUtility.Service;
 
 namespace IconResizeUtility.App
 {
@@ -10,21 +12,58 @@ namespace IconResizeUtility.App
     {
         public static void Main(string[] args)
         {
-            // Create a root command with some options
-            var rootCommand = new RootCommand();
+            RootCommand rootCommand = new RootCommand();
 
-            Command versionCommand = new Command("version");
-            versionCommand.Handler = CommandHandler.Create(GetVersion);
-            rootCommand.AddCommand(versionCommand);
+            Command resizeCommand = new Command("resize")
+            {
+                new Option<string>("--srcFolder") { IsRequired = true },
+                new Option<string>("--dstFolder"){ IsRequired = true },
+                new Option<string>("--prefix") { IsRequired = false },
+                new Option<string>("--iconSize") { IsRequired = false },
+                new Option<bool>("--postfixSize") { IsRequired = false }
+            };
+
+            resizeCommand.Handler = CommandHandler.Create((string srcFolder, string dstFolder, string prefix, string iconSize, bool postfixSize) =>
+                    Resize(srcFolder, dstFolder, prefix, iconSize, postfixSize));
             
-            // Parse the incoming args and invoke the handler
-            rootCommand.InvokeAsync(args).Wait();
+            rootCommand.AddCommand(resizeCommand);
+
+            rootCommand.Invoke(args);
         }
 
-        private static void GetVersion()
+        private static void Resize(string srcFolder, string dstFolder, string prefix, string iconSize, bool postfixSize)
         {
-            string version = Assembly.GetAssembly(typeof(Program)).GetName().Version.ToString();
-            Console.WriteLine($"Version: {version}");
+            List<int> sizeList = new List<int>();
+            Console.WriteLine($"Source folder: {srcFolder}");
+            Console.WriteLine($"Destination folder: {dstFolder}");
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                Console.WriteLine($"Prefix: {prefix}");
+            }
+
+            if (string.IsNullOrEmpty(iconSize))
+            {
+                sizeList.AddRange(AndroidResizeService.DefaultRequiredSizes);
+            }
+            else
+            {
+                string[] sizes = iconSize.Replace(" ", "").Split(',');
+                foreach (string size in sizes)
+                {
+                    sizeList.Add(int.Parse(size));
+                }
+            }
+
+            Console.WriteLine($"Use icons sizes: {string.Join(", ", sizeList)}");
+
+            Console.WriteLine($"PostfixSize: {postfixSize || sizeList.Count > 1}");
+
+            RenameUtility renameUtility = new RenameUtility();
+            ImageResizer imageResizer = new ImageResizer();
+
+            AndroidResizeService resizeService = new AndroidResizeService(imageResizer, renameUtility);
+
+            resizeService.Resize(srcFolder, dstFolder, postfixSize, prefix, sizeList);
         }
     }
 }

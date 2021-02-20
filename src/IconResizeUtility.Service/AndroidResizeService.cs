@@ -9,6 +9,9 @@ namespace IconResizeUtility.Service
         private readonly ImageResizer _resizer;
         private readonly RenameUtility _renameUtility;
 
+        /// <summary>
+        /// Association between resource folder and scale factor
+        /// </summary>
         public static IDictionary<string, double> ResFolderAssociation = new Dictionary<string, double>
         {
             {"drawable-mdpi", 1.0}, // 48*48
@@ -18,6 +21,10 @@ namespace IconResizeUtility.Service
             {"drawable-xxxhdpi", 4.0}, // 192* 192
         };
 
+        /// <summary>
+        /// The usually provided sizes for icons
+        /// The size is related to the drawable-mdpi otherwise ResFolderAssociation
+        /// </summary>
         public static IList<int> DefaultRequiredSizes = new List<int>
         {
             18,
@@ -75,7 +82,6 @@ namespace IconResizeUtility.Service
                         _resizer.Resize(file.FullName, destinationIconPath, size, size);
                     }
                 }
-
             }
         }
 
