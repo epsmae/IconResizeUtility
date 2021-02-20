@@ -31,9 +31,9 @@ namespace IconResizeUtility.Service.Test
         public void Setup()
         {
             ImageResizer resizer = new ImageResizer();
-            RenameUtility renameUtitlity = new RenameUtility();
-            _resultChecker = new ResultChecker(resizer, renameUtitlity);
-            _service = new AndroidResizeService(resizer, renameUtitlity);
+            ImageRenamer imageRenamer = new ImageRenamer();
+            _resultChecker = new ResultChecker(resizer, imageRenamer);
+            _service = new AndroidResizeService(resizer, imageRenamer);
 
 
             if (Directory.Exists(OutDir))

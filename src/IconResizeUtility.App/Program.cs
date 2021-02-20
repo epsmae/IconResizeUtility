@@ -58,10 +58,10 @@ namespace IconResizeUtility.App
 
             Console.WriteLine($"PostfixSize: {postfixSize || sizeList.Count > 1}");
 
-            RenameUtility renameUtility = new RenameUtility();
+            ImageRenamer imageRenamer = new ImageRenamer();
             ImageResizer imageResizer = new ImageResizer();
 
-            AndroidResizeService resizeService = new AndroidResizeService(imageResizer, renameUtility);
+            AndroidResizeService resizeService = new AndroidResizeService(imageResizer, imageRenamer);
 
             resizeService.Resize(srcFolder, dstFolder, postfixSize, prefix, sizeList);
         }

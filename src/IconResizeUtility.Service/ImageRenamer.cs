@@ -2,11 +2,11 @@
 
 namespace IconResizeUtility.Service
 {
-    public class RenameUtility
+    public class ImageRenamer
     {
         private readonly Regex _regex;
 
-        public RenameUtility()
+        public ImageRenamer()
         {
             _regex = new Regex("[^0-9a-zA-Z_]");
         }

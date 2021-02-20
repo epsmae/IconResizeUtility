@@ -9,12 +9,12 @@ namespace IconResizeUtility.TestInfrastructure
     public class ResultChecker
     {
         private readonly ImageResizer _imageResizer;
-        private readonly RenameUtility _renameUtility;
+        private readonly ImageRenamer _imageRenamer;
 
-        public ResultChecker(ImageResizer resizer, RenameUtility renameUtility)
+        public ResultChecker(ImageResizer resizer, ImageRenamer imageRenamer)
         {
             _imageResizer = resizer;
-            _renameUtility = renameUtility;
+            _imageRenamer = imageRenamer;
         }
 
         public void AssertIconsExistAndMatchSize(string testDataDir, string outDir, IList<int> expectedResolutions, bool postfixSize, string expectedPrefix)
@@ -66,16 +66,16 @@ namespace IconResizeUtility.TestInfrastructure
         private string GetIconName(string iconName, bool postfixSize, string prefix, int size)
         {
 
-            string baseName = _renameUtility.ConvertToValidIconName(iconName);
+            string baseName = _imageRenamer.ConvertToValidIconName(iconName);
 
             if (postfixSize)
             {
-                baseName = _renameUtility.AddPostfix(baseName, $"_{size}");
+                baseName = _imageRenamer.AddPostfix(baseName, $"_{size}");
             }
 
             if (!string.IsNullOrEmpty(prefix))
             {
-                baseName = _renameUtility.AddPrefix(baseName, prefix);
+                baseName = _imageRenamer.AddPrefix(baseName, prefix);
             }
 
             return baseName;

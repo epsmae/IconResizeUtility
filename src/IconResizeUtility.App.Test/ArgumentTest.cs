@@ -31,8 +31,8 @@ namespace IconResizeUtility.App.Test
         public void Setup()
         {
             ImageResizer resizer = new ImageResizer();
-            RenameUtility renameUtitlity = new RenameUtility();
-            _resultChecker = new ResultChecker(resizer, renameUtitlity);
+            ImageRenamer imageRenamer = new ImageRenamer();
+            _resultChecker = new ResultChecker(resizer, imageRenamer);
 
             if (Directory.Exists(OutDir))
             {

@@ -7,7 +7,7 @@ namespace IconResizeUtility.Service
     public class AndroidResizeService
     {
         private readonly ImageResizer _resizer;
-        private readonly RenameUtility _renameUtility;
+        private readonly ImageRenamer _imageRenamer;
 
         /// <summary>
         /// Association between resource folder and scale factor
@@ -34,10 +34,10 @@ namespace IconResizeUtility.Service
             48
         };
         
-        public AndroidResizeService(ImageResizer resizer, RenameUtility renameUtility)
+        public AndroidResizeService(ImageResizer resizer, ImageRenamer imageRenamer)
         {
             _resizer = resizer;
-            _renameUtility = renameUtility;
+            _imageRenamer = imageRenamer;
         }
 
 
@@ -53,7 +53,7 @@ namespace IconResizeUtility.Service
             {
                 foreach (string resolutionFolder in resolutionFolders)
                 {
-                    string baseIconName = _renameUtility.ConvertToValidIconName(file.Name);
+                    string baseIconName = _imageRenamer.ConvertToValidIconName(file.Name);
 
                     string path = Path.Combine(destinationPath, resolutionFolder);
 
@@ -63,7 +63,7 @@ namespace IconResizeUtility.Service
 
                         if (postfixSize || requiredSizes.Count > 1)
                         {
-                            finalIconName = _renameUtility.AddPostfix(baseIconName, $"_{requiredSize}");
+                            finalIconName = _imageRenamer.AddPostfix(baseIconName, $"_{requiredSize}");
                         }
                         else
                         {
@@ -72,7 +72,7 @@ namespace IconResizeUtility.Service
 
                         if (!string.IsNullOrEmpty(prefix))
                         {
-                            finalIconName = _renameUtility.AddPrefix(finalIconName, prefix);
+                            finalIconName = _imageRenamer.AddPrefix(finalIconName, prefix);
                         }
 
                         string destinationIconPath = Path.Combine(path, finalIconName);

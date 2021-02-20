@@ -4,12 +4,12 @@ namespace IconResizeUtility.Service.Test
 {
     public class RenameUtitlityTest
     {
-        private RenameUtility _renameUtility;
+        private ImageRenamer _imageRenamer;
 
         [SetUp]
         public void Setup()
         {
-            _renameUtility = new RenameUtility();
+            _imageRenamer = new ImageRenamer();
         }
 
         [Test]
@@ -18,7 +18,7 @@ namespace IconResizeUtility.Service.Test
             string unsafeIconName = "$-.,MyIcon 12.PNG";
             string expectedstring = "____myicon_12.png";
 
-            string result = _renameUtility.ConvertToValidIconName(unsafeIconName);
+            string result = _imageRenamer.ConvertToValidIconName(unsafeIconName);
             Assert.AreEqual(expectedstring, result);
         }
 
@@ -28,7 +28,7 @@ namespace IconResizeUtility.Service.Test
             string unsafeIconName = "$-.,MyIcon 12.PNG";
             string expectedstring = "____myicon_12.png";
 
-            string result = _renameUtility.ConvertToValidIconName(unsafeIconName);
+            string result = _imageRenamer.ConvertToValidIconName(unsafeIconName);
             Assert.AreEqual(expectedstring, result);
         }
 
@@ -39,7 +39,7 @@ namespace IconResizeUtility.Service.Test
             string iconName = "icon.png";
             string expectedstring = $"{prefix}{iconName}";
             
-            string result = _renameUtility.AddPrefix(iconName, prefix);
+            string result = _imageRenamer.AddPrefix(iconName, prefix);
             Assert.AreEqual(expectedstring, result);
         }
 
@@ -50,7 +50,7 @@ namespace IconResizeUtility.Service.Test
             string iconName = "icon.png";
             string expectedstring = $"icon{postfix}.png";
 
-            string result = _renameUtility.AddPostfix(iconName, postfix);
+            string result = _imageRenamer.AddPostfix(iconName, postfix);
             Assert.AreEqual(expectedstring, result);
         }
     }
