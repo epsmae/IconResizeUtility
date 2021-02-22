@@ -7,7 +7,7 @@ namespace IconResizeUtility.Service.Test
 {
     public class IOSResizerTest
     {
-        private AndroidResultChecker _resultChecker;
+        private IOSResultChecker _resultChecker;
         private IOSImageResizer _service;
 
         private string SrcDataDir
@@ -32,7 +32,7 @@ namespace IconResizeUtility.Service.Test
         {
             ImageResizer resizer = new ImageResizer();
             ImageRenamer imageRenamer = new ImageRenamer();
-            _resultChecker = new AndroidResultChecker(resizer, imageRenamer);
+            _resultChecker = new IOSResultChecker(resizer, imageRenamer);
             _service = new IOSImageResizer(resizer, imageRenamer);
 
 
@@ -51,10 +51,34 @@ namespace IconResizeUtility.Service.Test
 
             _service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions);
 
-            //_resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix);
-            //_resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
+            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix);
+            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
         }
 
-        
+        [Test]
+        public void TestResizeWithoutPrefix()
+        {
+            IList<int> expectedResolutions = AndroidResizeService.DefaultRequiredSizes;
+            string expectedPrefix = "";
+            const bool postFixSize = true;
+
+            _service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions);
+
+            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix);
+            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
+        }
+
+        [Test]
+        public void TestResizeWithoutPostfix()
+        {
+            IList<int> expectedResolutions = new List<int> { 48 };
+            string expectedPrefix = "ic_";
+            const bool postFixSize = false;
+
+            _service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions);
+
+            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix);
+            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
+        }
     }
 }
