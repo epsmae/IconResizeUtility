@@ -2,7 +2,7 @@
 
 namespace IconResizeUtility.Service.Test
 {
-    public class RenameUtitlityTest
+    public class ImageRenamerTest
     {
         private ImageRenamer _imageRenamer;
 
