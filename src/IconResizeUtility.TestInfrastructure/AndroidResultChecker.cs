@@ -6,12 +6,12 @@ using NUnit.Framework;
 
 namespace IconResizeUtility.TestInfrastructure
 {
-    public class ResultChecker
+    public class AndroidResultChecker
     {
         private readonly ImageResizer _imageResizer;
         private readonly ImageRenamer _imageRenamer;
 
-        public ResultChecker(ImageResizer resizer, ImageRenamer imageRenamer)
+        public AndroidResultChecker(ImageResizer resizer, ImageRenamer imageRenamer)
         {
             _imageResizer = resizer;
             _imageRenamer = imageRenamer;

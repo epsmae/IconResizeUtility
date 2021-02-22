@@ -7,7 +7,7 @@ namespace IconResizeUtility.Service.Test
 {
     public class IOSResizerTest
     {
-        private ResultChecker _resultChecker;
+        private AndroidResultChecker _resultChecker;
         private IOSImageResizer _service;
 
         private string SrcDataDir
@@ -32,7 +32,7 @@ namespace IconResizeUtility.Service.Test
         {
             ImageResizer resizer = new ImageResizer();
             ImageRenamer imageRenamer = new ImageRenamer();
-            _resultChecker = new ResultChecker(resizer, imageRenamer);
+            _resultChecker = new AndroidResultChecker(resizer, imageRenamer);
             _service = new IOSImageResizer(resizer, imageRenamer);
 
 

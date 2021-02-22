@@ -8,7 +8,7 @@ namespace IconResizeUtility.App.Test
 {
     public class Tests
     {
-        private ResultChecker _resultChecker;
+        private AndroidResultChecker _androidResultChecker;
 
         private string SrcDataDir
         {
@@ -32,7 +32,7 @@ namespace IconResizeUtility.App.Test
         {
             ImageResizer resizer = new ImageResizer();
             ImageRenamer imageRenamer = new ImageRenamer();
-            _resultChecker = new ResultChecker(resizer, imageRenamer);
+            _androidResultChecker = new AndroidResultChecker(resizer, imageRenamer);
 
             if (Directory.Exists(OutDir))
             {
@@ -59,8 +59,8 @@ namespace IconResizeUtility.App.Test
 
             Program.Main(new[] { "resize", "--dstFolder", OutDir, "--srcFolder", SrcDataDir, "--prefix", "icon_", "--postfixSize", "false" });
 
-            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedSizes, true, "icon_");
-            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedSizes);
+            _androidResultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedSizes, true, "icon_");
+            _androidResultChecker.AssertIconCount(SrcDataDir, OutDir, expectedSizes);
         }
 
         [Test]
@@ -70,8 +70,8 @@ namespace IconResizeUtility.App.Test
 
             Program.Main(new[] { "resize", "--dstFolder", OutDir, "--srcFolder", SrcDataDir, "--prefix", "icon_", "--iconSize", "42", "--postfixSize", "false" });
 
-            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedSizes, false, "icon_");
-            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedSizes);
+            _androidResultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedSizes, false, "icon_");
+            _androidResultChecker.AssertIconCount(SrcDataDir, OutDir, expectedSizes);
         }
 
         [Test]
@@ -81,8 +81,8 @@ namespace IconResizeUtility.App.Test
 
             Program.Main(new[] { "resize", "--dstFolder", OutDir, "--srcFolder", SrcDataDir, "--iconSize", "42", "--postfixSize", "true" });
 
-            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedSizes, true, "");
-            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedSizes);
+            _androidResultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedSizes, true, "");
+            _androidResultChecker.AssertIconCount(SrcDataDir, OutDir, expectedSizes);
         }
 
         [Test]
@@ -92,8 +92,8 @@ namespace IconResizeUtility.App.Test
 
             Program.Main(new[] { "resize", "--dstFolder", OutDir, "--srcFolder", SrcDataDir, "--prefix", "icon_", "--iconSize", "18,28, 38", "--postfixSize", "false" });
 
-            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedSizes, true, "icon_");
-            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedSizes);
+            _androidResultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedSizes, true, "icon_");
+            _androidResultChecker.AssertIconCount(SrcDataDir, OutDir, expectedSizes);
         }
     }
 }
