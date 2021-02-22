@@ -5,10 +5,10 @@ using NUnit.Framework;
 
 namespace IconResizeUtility.Service.Test
 {
-    public class AndroidResizerTest
+    public class IOSResizerTest
     {
-        private AndroidResultChecker _resultChecker;
-        private AndroidResizeService _service;
+        private IOSResultChecker _resultChecker;
+        private IOSImageResizeService _service;
 
         private string SrcDataDir
         {
@@ -32,8 +32,8 @@ namespace IconResizeUtility.Service.Test
         {
             ImageResizer resizer = new ImageResizer();
             ImageRenamer imageRenamer = new ImageRenamer();
-            _resultChecker = new AndroidResultChecker(resizer, imageRenamer);
-            _service = new AndroidResizeService(resizer, imageRenamer);
+            _resultChecker = new IOSResultChecker(resizer, imageRenamer);
+            _service = new IOSImageResizeService(resizer, imageRenamer);
 
 
             if (Directory.Exists(OutDir))
@@ -45,7 +45,7 @@ namespace IconResizeUtility.Service.Test
         [Test]
         public void TestResize()
         {
-            IList<int> expectedResolutions = AndroidResizeService.DefaultRequiredSizes;
+            IList<int> expectedResolutions = IOSImageResizeService.DefaultRequiredSizes;
             string expectedPrefix = "ic_";
             const bool postFixSize = true;
 
@@ -71,7 +71,7 @@ namespace IconResizeUtility.Service.Test
         [Test]
         public void TestResizeWithoutPostfix()
         {
-            IList<int> expectedResolutions = new List<int>{48};
+            IList<int> expectedResolutions = new List<int> { 48 };
             string expectedPrefix = "ic_";
             const bool postFixSize = false;
 

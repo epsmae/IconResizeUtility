@@ -1,17 +1,16 @@
 # Icon Resize Utility
 
 ## Intro
-This repo contains a command line utility to create icon sets for Android and iOS development
+This repo contains a command line utility to create icon sets for Android and iOS development.
+I often get icons from diffrent designers and usually the icons are not in the correct sizes, contain invalid characters or are like the material icons in seperate folders. This tool should assist for this annoying process.
 
 
 |Description      |Link        |
 |-----------------|------------|
-|Build            |[![Build Status](https://my-tech-projects.visualstudio.com/Icon%20Resize%20Utility/_apis/build/status/Release%20Build?branchName=master)](https://my-tech-projects.visualstudio.com/Icon%20Resize%20Utility/_build/latest?definitionId=15&branchName=master))|
+|Build            |[![Build Status](https://my-tech-projects.visualstudio.com/Icon%20Resize%20Utility/_apis/build/status/Release%20Build?branchName=master)](https://my-tech-projects.visualstudio.com/Icon%20Resize%20Utility/_build/latest?definitionId=15&branchName=master)|
 |Nuget            |[![Nuget](https://img.shields.io/nuget/v/IconResizeUtility.App)](https://www.nuget.org/packages/IconResizeUtility.App)|
 |Nuget Prerelease |![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/IconResizeUtility.App)
 
-## Intro
-I often get icons from diffrent designers and usually the icons are not in the correct sizes, contain invalid characters or are like the material icons in seperate folders. This tool should assist for this annoying process.
 
 ## Roadmap
 

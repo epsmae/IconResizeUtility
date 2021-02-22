@@ -95,9 +95,9 @@ namespace IconResizeUtility.Service
 
         private void EnsureDirectoryExists(string directory)
         {
-            if (!System.IO.Directory.Exists(directory))
+            if (!Directory.Exists(directory))
             {
-                System.IO.Directory.CreateDirectory(directory);
+                Directory.CreateDirectory(directory);
             }
         }
     }

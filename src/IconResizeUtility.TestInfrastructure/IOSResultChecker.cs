@@ -2,16 +2,17 @@
 using System.IO;
 using System.Linq;
 using IconResizeUtility.Service;
+using IconResizeUtility.Service.DataModel;
 using NUnit.Framework;
 
 namespace IconResizeUtility.TestInfrastructure
 {
-    public class ResultChecker
+    public class IOSResultChecker
     {
         private readonly ImageResizer _imageResizer;
         private readonly ImageRenamer _imageRenamer;
 
-        public ResultChecker(ImageResizer resizer, ImageRenamer imageRenamer)
+        public IOSResultChecker(ImageResizer resizer, ImageRenamer imageRenamer)
         {
             _imageResizer = resizer;
             _imageRenamer = imageRenamer;
@@ -24,12 +25,13 @@ namespace IconResizeUtility.TestInfrastructure
             foreach (FileInfo file in srcFolderInfo.EnumerateFiles())
             {
                 cnt++;
-                foreach (string folder in AndroidResizeService.ResFolderAssociation.Keys.ToArray())
+
+                foreach (int expectedResolution in expectedResolutions)
                 {
-                    foreach (int expectedResolution in expectedResolutions)
+                    foreach (string scaleFactor in IOSImageResizeService.ResNameAssociation.Keys.ToArray())
                     {
-                        int expectedSize = (int)(expectedResolution * AndroidResizeService.ResFolderAssociation[folder]);
-                        AssertContainsIconSize(outDir, folder, file.Name, postfixSize, expectedPrefix, expectedResolution,
+                        int expectedSize = (int)(expectedResolution * IOSImageResizeService.ResNameAssociation[scaleFactor]);
+                        AssertContainsIconSize(outDir, scaleFactor, file.Name, postfixSize, expectedPrefix, expectedResolution,
                             expectedSize);
                     }
                 }
@@ -37,7 +39,7 @@ namespace IconResizeUtility.TestInfrastructure
 
             if (cnt == 0)
             {
-                Assert.Fail("No images found in source folder");
+                Assert.Fail("No images found in source scaleFactor");
             }
         }
 
@@ -45,15 +47,20 @@ namespace IconResizeUtility.TestInfrastructure
         {
             int srcFileCount = Directory.EnumerateFiles(srcDataDir).Count();
             int iconCount = Directory.EnumerateFiles(outDir, "*", SearchOption.AllDirectories).Count();
-            int expectedCount = srcFileCount * expectedResolutions.Count * AndroidResizeService.ResFolderAssociation.Count;
+            // json file also counts
+            int expectedCount = srcFileCount * expectedResolutions.Count * (IOSImageResizeService.ResNameAssociation.Count +1);
             Assert.AreEqual(expectedCount, iconCount);
         }
 
-        private void AssertContainsIconSize(string outputDirectory, string folder, string iconName, bool postfixSize, string prefix, int size, int expectedSize)
+        private void AssertContainsIconSize(string outputDirectory, string scaleFactor, string iconName, bool postfixSize, string prefix, int size, int expectedSize)
         {
             string adjustedName = GetIconName(iconName, postfixSize, prefix, size);
 
-            string fullImagePath = Path.Combine(outputDirectory, folder, adjustedName);
+            string folderPath = Path.Combine(outputDirectory, $"{Path.GetFileNameWithoutExtension(adjustedName)}.imageset");
+
+            adjustedName = _imageRenamer.AddPostfix(adjustedName, $"_{scaleFactor}");
+
+            string fullImagePath = Path.Combine(folderPath, adjustedName);
 
             Assert.True(File.Exists(fullImagePath));
 
@@ -61,16 +68,20 @@ namespace IconResizeUtility.TestInfrastructure
 
             Assert.AreEqual(expectedSize, info.Height);
             Assert.AreEqual(expectedSize, info.Width);
+
+            string jsonContentsPath = Path.Combine(folderPath, "Contents.json");
+
+            string jsonContent = File.ReadAllText(jsonContentsPath);
+            Assert.True(jsonContent.Contains(adjustedName));
         }
 
         private string GetIconName(string iconName, bool postfixSize, string prefix, int size)
         {
-
             string baseName = _imageRenamer.ConvertToValidIconName(iconName);
 
             if (postfixSize)
             {
-                baseName = _imageRenamer.AddPostfix(baseName, $"_{size}");
+                baseName = _imageRenamer.AddPostfix(baseName, $"_{size}pt");
             }
 
             if (!string.IsNullOrEmpty(prefix))
