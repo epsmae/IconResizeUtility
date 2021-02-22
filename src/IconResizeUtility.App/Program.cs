@@ -94,7 +94,7 @@ namespace IconResizeUtility.App
 
             if (type.ToLower() == "ios")
             {
-                IOSImageResizer resizeService = new IOSImageResizer(imageResizer, imageRenamer);
+                IOSImageResizeService resizeService = new IOSImageResizeService(imageResizer, imageRenamer);
                 resizeService.Resize(srcFolder, dstFolder, postfixSize, prefix, sizeList);
             }
             else

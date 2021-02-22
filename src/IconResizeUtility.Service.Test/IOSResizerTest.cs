@@ -8,7 +8,7 @@ namespace IconResizeUtility.Service.Test
     public class IOSResizerTest
     {
         private IOSResultChecker _resultChecker;
-        private IOSImageResizer _service;
+        private IOSImageResizeService _service;
 
         private string SrcDataDir
         {
@@ -33,7 +33,7 @@ namespace IconResizeUtility.Service.Test
             ImageResizer resizer = new ImageResizer();
             ImageRenamer imageRenamer = new ImageRenamer();
             _resultChecker = new IOSResultChecker(resizer, imageRenamer);
-            _service = new IOSImageResizer(resizer, imageRenamer);
+            _service = new IOSImageResizeService(resizer, imageRenamer);
 
 
             if (Directory.Exists(OutDir))
@@ -45,7 +45,7 @@ namespace IconResizeUtility.Service.Test
         [Test]
         public void TestResize()
         {
-            IList<int> expectedResolutions = IOSImageResizer.DefaultRequiredSizes;
+            IList<int> expectedResolutions = IOSImageResizeService.DefaultRequiredSizes;
             string expectedPrefix = "ic_";
             const bool postFixSize = true;
 

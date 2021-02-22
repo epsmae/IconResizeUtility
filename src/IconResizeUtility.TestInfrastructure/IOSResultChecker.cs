@@ -28,9 +28,9 @@ namespace IconResizeUtility.TestInfrastructure
 
                 foreach (int expectedResolution in expectedResolutions)
                 {
-                    foreach (string scaleFactor in IOSImageResizer.ResNameAssociation.Keys.ToArray())
+                    foreach (string scaleFactor in IOSImageResizeService.ResNameAssociation.Keys.ToArray())
                     {
-                        int expectedSize = (int)(expectedResolution * IOSImageResizer.ResNameAssociation[scaleFactor]);
+                        int expectedSize = (int)(expectedResolution * IOSImageResizeService.ResNameAssociation[scaleFactor]);
                         AssertContainsIconSize(outDir, scaleFactor, file.Name, postfixSize, expectedPrefix, expectedResolution,
                             expectedSize);
                     }
@@ -48,7 +48,7 @@ namespace IconResizeUtility.TestInfrastructure
             int srcFileCount = Directory.EnumerateFiles(srcDataDir).Count();
             int iconCount = Directory.EnumerateFiles(outDir, "*", SearchOption.AllDirectories).Count();
             // json file also counts
-            int expectedCount = srcFileCount * expectedResolutions.Count * (IOSImageResizer.ResNameAssociation.Count +1);
+            int expectedCount = srcFileCount * expectedResolutions.Count * (IOSImageResizeService.ResNameAssociation.Count +1);
             Assert.AreEqual(expectedCount, iconCount);
         }
 
