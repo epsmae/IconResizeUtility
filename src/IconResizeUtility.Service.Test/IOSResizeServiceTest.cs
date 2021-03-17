@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace IconResizeUtility.Service.Test
 {
-    public class IOSResizerTest
+    public class IOSResizeServiceTest
     {
         private IOSResultChecker _resultChecker;
         private IOSImageResizeService _service;

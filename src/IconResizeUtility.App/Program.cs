@@ -4,7 +4,10 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Linq;
 using System.Reflection;
+using System.Xml;
+using System.Xml.Linq;
 using IconResizeUtility.Service;
+using Microsoft.Build.Evaluation;
 
 namespace IconResizeUtility.App
 {
@@ -45,18 +48,23 @@ namespace IconResizeUtility.App
                 {
                     IsRequired = false,
                     Description = "Optional, postfix icon size. Required if multiple sizes where choosen"
+                },
+                new Option<string>("--csproj")
+                {
+                    IsRequired = false,
+                    Description = "Optional, full path to the Xamarin .csproj file where the icons should be added"
                 }
             };
 
-            resizeCommand.Handler = CommandHandler.Create((string type, string srcFolder, string dstFolder, string prefix, string iconSize, bool postfixSize) =>
-                    Resize(type, srcFolder, dstFolder, prefix, iconSize, postfixSize));
+            resizeCommand.Handler = CommandHandler.Create((string type, string srcFolder, string dstFolder, string prefix, string iconSize, bool postfixSize, string csproj) =>
+                    Resize(type, srcFolder, dstFolder, prefix, iconSize, postfixSize, csproj));
             
             rootCommand.AddCommand(resizeCommand);
 
             rootCommand.Invoke(args);
         }
 
-        private static void Resize(string type, string srcFolder, string dstFolder, string prefix, string iconSize, bool postfixSize)
+        private static void Resize(string type, string srcFolder, string dstFolder, string prefix, string iconSize, bool postfixSize, string csproj)
         {
             if (!(type.ToLower() == "ios" || type.ToLower() == "droid"))
             {
@@ -99,8 +107,20 @@ namespace IconResizeUtility.App
             }
             else
             {
-                AndroidResizeService resizeService = new AndroidResizeService(imageResizer, imageRenamer);
+                IProjectFileUpdater projectUpdater;
+                if (string.IsNullOrEmpty(csproj))
+                {
+                    projectUpdater = new ProjectUpdaterStub();
+                }
+                else
+                {
+                    projectUpdater = new DroidProjectFileUpdater();
+                    projectUpdater.LoadProjectFile(csproj);
+                }
+
+                AndroidResizeService resizeService = new AndroidResizeService(imageResizer, imageRenamer, projectUpdater);
                 resizeService.Resize(srcFolder, dstFolder, postfixSize, prefix, sizeList);
+                projectUpdater.Save(csproj);
             }
         }
     }

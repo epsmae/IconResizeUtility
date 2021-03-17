@@ -13,9 +13,18 @@ namespace IconResizeUtility.Service
                 {
                     using (SKBitmap resizedBitmap = srcBitmap.Resize(new SKSizeI(width, height), SKFilterQuality.Medium))
                     {
+                        SKBitmap bmp = new SKBitmap(new SKImageInfo(resizedBitmap.Width, resizedBitmap.Height, resizedBitmap.ColorType, resizedBitmap.AlphaType, resizedBitmap.ColorSpace));
+
+                        SKCanvas canvas = new SKCanvas(bmp);
+                        
                         using (FileStream dstStream = File.OpenWrite(dstImagePath))
                         {
-                            resizedBitmap.Encode(SKEncodedImageFormat.Png, 100).SaveTo(dstStream);
+                            SKPaint paint = new SKPaint();
+                            paint.Color = new SKColor(0, 150, 0);
+                            
+                            canvas.DrawBitmap(resizedBitmap, 0, 0, paint);
+
+                            bmp.Encode(SKEncodedImageFormat.Png, 100).SaveTo(dstStream);
                         }
                     }
                 }
