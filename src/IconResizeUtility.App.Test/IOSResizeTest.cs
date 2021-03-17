@@ -18,7 +18,14 @@ namespace IconResizeUtility.App.Test
             }
         }
 
-
+        private string ProjectFile
+        {
+            get
+            {
+                return Path.Combine(TestContext.CurrentContext.TestDirectory, "TestProjectFile", "ResizeUtility.App.iOS.csproj");
+            }
+        }
+        
         private string OutDir
         {
             get
@@ -94,6 +101,28 @@ namespace IconResizeUtility.App.Test
 
             _iOSResultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedSizes, true, "icon_");
             _iOSResultChecker.AssertIconCount(SrcDataDir, OutDir, expectedSizes);
+        }
+
+
+        [Test]
+        public void TestCsprojUpdate()
+        {
+            IList<int> expectedSizes = new List<int> { 42 };
+
+            Program.Main(new[] { "resize", "--type", "ios", "--dstFolder", OutDir, "--srcFolder", SrcDataDir, "--prefix", "icon_", "--iconSize", "42", "--postfixSize", "false", "--csproj", ProjectFile });
+
+            _iOSResultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedSizes, false, "icon_");
+            _iOSResultChecker.AssertIconCount(SrcDataDir, OutDir, expectedSizes);
+
+            new ProjectFileTester(new DroidProjectFileUpdater()).AssertContainsIcon(ProjectFile, new List<string>
+            {
+                "material_icon_bug_1x.png",
+                "material_icon_bug_2x.png",
+                "material_icon_bug_3x.png",
+                "material_icon_build_1x.png",
+                "material_icon_build_2x.png",
+                "material_icon_build_3x.png"
+            });
         }
     }
 }
