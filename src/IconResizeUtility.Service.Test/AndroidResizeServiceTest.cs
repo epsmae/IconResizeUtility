@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace IconResizeUtility.Service.Test
 {
-    public class AndroidResizerTest
+    public class AndroidResizeServiceTest
     {
         private AndroidResultChecker _resultChecker;
         private AndroidResizeService _service;
@@ -33,7 +33,7 @@ namespace IconResizeUtility.Service.Test
             ImageResizer resizer = new ImageResizer();
             ImageRenamer imageRenamer = new ImageRenamer();
             _resultChecker = new AndroidResultChecker(resizer, imageRenamer);
-            _service = new AndroidResizeService(resizer, imageRenamer);
+            _service = new AndroidResizeService(resizer, imageRenamer, new ProjectUpdaterStub());
 
 
             if (Directory.Exists(OutDir))

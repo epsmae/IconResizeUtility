@@ -14,16 +14,17 @@ I often get icons from diffrent designers and usually the icons are not in the c
 
 ## Roadmap
 
-|Prio  |Description                                  |Status               |
-|------|---------------------------------------------|---------------------|
-| 1    |Android image resizing                       | implemented         |
-| 2    |iOS image resizing                           | planned             |
-| 3    |Add opt out for rename to valid icon name    | planned             |
-| 4    |Cache resized images to improve performance  | planned             |
-| 5    |Move to res folders Android / iOS            | planned             |
-| 6    |Rename icon name                             | planned             |
-| 7    |Provide optional skip for existing           | planned             |
-| 8    |Add icons directly to Xamarin .sln           | idea                |
+|Prio  |Description                                       |Status               |
+|------|--------------------------------------------------|---------------------|
+| 1    |Android image resizing                            | implemented         |
+| 2    |iOS image resizing                                | implemented         |
+| 3    |Add icons directly to Xamarin .sln                | implemented         |
+| 4    |Add opt out for rename to valid icon name         | planned             |
+| 5    |Cache resized images to improve performance       | planned             |
+| 6    |Move to res folders Android / iOS without resize  | planned             |
+| 7    |Rename icon name                                  | planned             |
+| 8    |Provide optional skip for existing                | planned             |
+
 
 
 ## Installation / Deinstallation

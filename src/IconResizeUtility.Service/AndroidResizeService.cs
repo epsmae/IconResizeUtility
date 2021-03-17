@@ -8,6 +8,7 @@ namespace IconResizeUtility.Service
     {
         private readonly ImageResizer _resizer;
         private readonly ImageRenamer _imageRenamer;
+        private readonly IProjectFileUpdater _projectFileUpdater;
 
         /// <summary>
         /// Association between resource folder and scale factor
@@ -34,10 +35,11 @@ namespace IconResizeUtility.Service
             48
         };
         
-        public AndroidResizeService(ImageResizer resizer, ImageRenamer imageRenamer)
+        public AndroidResizeService(ImageResizer resizer, ImageRenamer imageRenamer, IProjectFileUpdater projectFileUpdater)
         {
             _resizer = resizer;
             _imageRenamer = imageRenamer;
+            _projectFileUpdater = projectFileUpdater;
         }
 
 
@@ -80,6 +82,9 @@ namespace IconResizeUtility.Service
                         int size = (int) (requiredSize * ResFolderAssociation[resolutionFolder]);
 
                         _resizer.Resize(file.FullName, destinationIconPath, size, size);
+
+                        string relativeIconPath = Path.Combine("Resources", resolutionFolder, finalIconName);
+                        _projectFileUpdater.AddIcon(relativeIconPath);
                     }
                 }
             }
