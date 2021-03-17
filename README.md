@@ -50,13 +50,15 @@ dotnet tool uninstall --global IconResizeUtility.App
 
 ### resize
 
-|Argument       |Description                                                 |Optional             |
-|---------------|------------------------------------------------------------|---------------------|
-| --srcFolder   |Folder where the icons are size > out size                  | No                  |
-| --dstFolder   |Folder where the output will be written to                  | No                  |
-| --iconSize    |Size of the icon (without scale factor)                     | Yes                 |
-| --prefix      |Adds a prefix to the icon names                             | Yes                 |
-| --postfixSize |The postfix size can be skipt if only 1 size is created     | Yes                 |
+|Argument       |Description                                                           |Optional             |
+|---------------|----------------------------------------------------------------------|---------------------|
+| --type        |droid or ios                                                          | No                  |
+| --srcFolder   |Folder where the icons are size > out size                            | No                  |
+| --dstFolder   |Folder where the output will be written to                            | No                  |
+| --iconSize    |Size of the icon (without scale factor)                               | Yes                 |
+| --prefix      |Adds a prefix to the icon names                                       | Yes                 |
+| --postfixSize |The postfix size can be skipt if only 1 size is created               | Yes                 |
+| --csproj      |full path to the Xamarin .csproj file where the icons should be added | Yes                 |
 
 ### resize
 
@@ -67,7 +69,8 @@ dotnet tool uninstall --global IconResizeUtility.App
 Create resized images with the android default sizes
 
 ```bash
-IconResizeUtility resize --dstFolder out --srcFolder src --prefix ic_
+IconResizeUtility resize --type droid --dstFolder out --srcFolder src --prefix ic_
+Type: droid
 Source folder: src
 Destination folder: out
 Prefix: ic_
@@ -122,12 +125,12 @@ tree /F
 With a single size the postfix size can be set to false
 
 ```bash
-IconResizeUtility resize --dstFolder out --srcFolder src --postfixSize false --iconSize 42
+IconResizeUtility resize --type droid --dstFolder out --srcFolder src --postfixSize false --iconSize 42
+Type: droid
 Source folder: src
 Destination folder: out
 Use icons sizes: 42
 PostfixSize: False
-
 ```
 
 The result looks like that
@@ -148,4 +151,16 @@ tree /F
 │       ...
 └───drawable-xxxhdpi
         ...
+```
+
+### Directly add to project file
+
+```bash
+IconResizeUtility resize --type droid --dstFolder out --srcFolder src --postfixSize false --iconSize 42 --csproj droid.csproj
+Type: droid
+Source folder: src
+Destination folder: out
+Use icons sizes: 42
+PostfixSize: False
+Csproj: droid.csproj
 ```

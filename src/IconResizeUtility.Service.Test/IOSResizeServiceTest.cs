@@ -33,7 +33,7 @@ namespace IconResizeUtility.Service.Test
             ImageResizer resizer = new ImageResizer();
             ImageRenamer imageRenamer = new ImageRenamer();
             _resultChecker = new IOSResultChecker(resizer, imageRenamer);
-            _service = new IOSImageResizeService(resizer, imageRenamer);
+            _service = new IOSImageResizeService(resizer, imageRenamer, new ProjectUpdaterStub());
 
 
             if (Directory.Exists(OutDir))

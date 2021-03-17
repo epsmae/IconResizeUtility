@@ -2,12 +2,7 @@
 using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
-using System.Xml.Linq;
 using IconResizeUtility.Service;
-using Microsoft.Build.Evaluation;
 
 namespace IconResizeUtility.App
 {
@@ -73,6 +68,7 @@ namespace IconResizeUtility.App
             }
 
             List<int> sizeList = new List<int>();
+            Console.WriteLine($"Type: {type}");
             Console.WriteLine($"Source folder: {srcFolder}");
             Console.WriteLine($"Destination folder: {dstFolder}");
             if (!string.IsNullOrEmpty(prefix))
@@ -97,17 +93,34 @@ namespace IconResizeUtility.App
 
             Console.WriteLine($"PostfixSize: {postfixSize || sizeList.Count > 1}");
 
+            if (!string.IsNullOrEmpty(csproj))
+            {
+                Console.WriteLine($"Csproj: {csproj}");
+            }
+
             ImageRenamer imageRenamer = new ImageRenamer();
             ImageResizer imageResizer = new ImageResizer();
+            IProjectFileUpdater projectUpdater;
 
             if (type.ToLower() == "ios")
             {
-                IOSImageResizeService resizeService = new IOSImageResizeService(imageResizer, imageRenamer);
+                if (string.IsNullOrEmpty(csproj))
+                {
+                    projectUpdater = new ProjectUpdaterStub();
+                }
+                else
+                {
+                    projectUpdater = new DroidProjectFileUpdater();
+                    projectUpdater.LoadProjectFile(csproj);
+                }
+
+                IOSImageResizeService resizeService = new IOSImageResizeService(imageResizer, imageRenamer, projectUpdater);
                 resizeService.Resize(srcFolder, dstFolder, postfixSize, prefix, sizeList);
+                projectUpdater.Save(csproj);
             }
             else
             {
-                IProjectFileUpdater projectUpdater;
+                
                 if (string.IsNullOrEmpty(csproj))
                 {
                     projectUpdater = new ProjectUpdaterStub();

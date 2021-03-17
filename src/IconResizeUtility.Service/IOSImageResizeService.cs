@@ -33,11 +33,13 @@ namespace IconResizeUtility.Service
 
         private readonly ImageResizer _resizer;
         private readonly ImageRenamer _imageRenamer;
+        private readonly IProjectFileUpdater _projectFileUpdater;
 
-        public IOSImageResizeService(ImageResizer resizer, ImageRenamer imageRenamer)
+        public IOSImageResizeService(ImageResizer resizer, ImageRenamer imageRenamer, IProjectFileUpdater projectFileUpdater)
         {
             _resizer = resizer;
             _imageRenamer = imageRenamer;
+            _projectFileUpdater = projectFileUpdater;
         }
 
 
@@ -92,6 +94,8 @@ namespace IconResizeUtility.Service
                             Size = $"{requiredSize}x{requiredSize}"
                         };
                         imagesInfo.Add(image);
+                        string relativeIconPath = Path.Combine("Assets.xcassets", folderName, finalIconName);
+                        _projectFileUpdater.AddIcon(relativeIconPath);
                     }
 
                     CreateContentJson(folderPath, imagesInfo);
