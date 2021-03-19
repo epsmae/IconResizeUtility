@@ -25,7 +25,7 @@ namespace IconResizeUtility.Service
                 XElement root = new XElement(_msbuildNamespace + "ItemGroup");
                 XElement asset = new XElement(_msbuildNamespace + "ImageAsset");
                 asset.Add(new XAttribute("Include", iconId));
-                asset.Add(new XElement("Visible", "false"));
+                asset.Add(new XElement(_msbuildNamespace + "Visible", "false"));
                 root.Add(asset);
                 _xmldoc.Root.Add(root);
                 _iconElements.Add(asset);
