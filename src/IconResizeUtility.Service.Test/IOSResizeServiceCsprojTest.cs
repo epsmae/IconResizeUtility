@@ -20,7 +20,7 @@ namespace IconResizeUtility.Service.Test
             }
         }
 
-        private string ProjectFile
+        private string SrcProjectFile
         {
             get
             {
@@ -28,11 +28,27 @@ namespace IconResizeUtility.Service.Test
             }
         }
 
+        private string OutProjectFile
+        {
+            get
+            {
+                return Path.Combine(OutDir, "ResizeUtility.App.iOS.csproj.out");
+            }
+        }
+
         private string OutDir
         {
             get
             {
-                return Path.Combine(TestContext.CurrentContext.WorkDirectory, "out", "Icons");
+                return Path.Combine(TestContext.CurrentContext.WorkDirectory, "out");
+            }
+        }
+
+        private string OutIconDir
+        {
+            get
+            {
+                return Path.Combine(OutDir, "Icons");
             }
         }
 
@@ -58,13 +74,13 @@ namespace IconResizeUtility.Service.Test
         {
             IList<int> expectedResolutions = new List<int>{48};
 
-            _projectFileUpdater.LoadProjectFile(ProjectFile);
-            _service.Resize(SrcDataDir, OutDir, false, string.Empty, expectedResolutions);
-            _projectFileUpdater.Save(ProjectFile);
+            _projectFileUpdater.LoadProjectFile(SrcProjectFile);
+            _service.Resize(SrcDataDir, OutIconDir, false, string.Empty, expectedResolutions);
+            _projectFileUpdater.Save(OutProjectFile);
 
-            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, false, string.Empty);
-            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
-            _projectFileTester.AssertContainsIcon(ProjectFile, new List<string>
+            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutIconDir, expectedResolutions, false, string.Empty);
+            _resultChecker.AssertIconCount(SrcDataDir, OutIconDir, expectedResolutions);
+            _projectFileTester.AssertContainsIcon(OutProjectFile, new List<string>
             {
                 "Assets.xcassets\\material_icon_addchar.imageset\\material_icon_addchar_1x.png",
                 "Assets.xcassets\\material_icon_addchar.imageset\\material_icon_addchar_2x.png",
