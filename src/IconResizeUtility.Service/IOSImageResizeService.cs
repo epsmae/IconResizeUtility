@@ -42,13 +42,10 @@ namespace IconResizeUtility.Service
             _projectFileUpdater = projectFileUpdater;
         }
 
-
         public void Resize(string sourcePath, string destinationPath, bool postfixSize, string prefix, IList<int> requiredSizes)
         {
             string[] resolutionFolders = ResNameAssociation.Keys.ToArray();
-
-            //EnsureDirectoriesExist(destinationPath, resolutionFolders);
-
+            
             EnsureDirectoryExists(destinationPath);
 
             DirectoryInfo directoryInfo = new DirectoryInfo(sourcePath);
@@ -99,6 +96,8 @@ namespace IconResizeUtility.Service
                     }
 
                     CreateContentJson(folderPath, imagesInfo);
+                    string relativeContentFilePath = Path.Combine("Assets.xcassets", folderName, "Contents.json");
+                    _projectFileUpdater.AddIcon(relativeContentFilePath);
                 }
             }
         }
@@ -117,14 +116,6 @@ namespace IconResizeUtility.Service
             string fullFileName = Path.Combine(path, "Contents.json");
             File.WriteAllText(fullFileName, JsonConvert.SerializeObject(contents, Formatting.Indented));
         }
-
-        //private void EnsureDirectoriesExist(string destinationPath, string[] directories)
-        //{
-        //    foreach (string directory in directories)
-        //    {
-        //        EnsureDirectoryExists(Path.Combine(destinationPath, directory));
-        //    }
-        //}
 
         private void EnsureDirectoryExists(string directory)
         {

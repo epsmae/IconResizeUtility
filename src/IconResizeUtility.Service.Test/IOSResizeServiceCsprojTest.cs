@@ -66,12 +66,14 @@ namespace IconResizeUtility.Service.Test
             _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
             _projectFileTester.AssertContainsIcon(ProjectFile, new List<string>
             {
-                "material_icon_addchar_1x.png",
-                "material_icon_addchar_2x.png",
-                "material_icon_addchar_3x.png",
-                "material_icon_alarm_1x.png",
-                "material_icon_alarm_2x.png",
-                "material_icon_alarm_3x.png"
+                "Assets.xcassets\\material_icon_addchar.imageset\\material_icon_addchar_1x.png",
+                "Assets.xcassets\\material_icon_addchar.imageset\\material_icon_addchar_2x.png",
+                "Assets.xcassets\\material_icon_addchar.imageset\\material_icon_addchar_3x.png",
+                "Assets.xcassets\\material_icon_addchar.imageset\\Contents.json",
+                "Assets.xcassets\\material_icon_alarm.imageset\\material_icon_alarm_1x.png",
+                "Assets.xcassets\\material_icon_alarm.imageset\\material_icon_alarm_2x.png",
+                "Assets.xcassets\\material_icon_alarm.imageset\\material_icon_alarm_3x.png",
+                "Assets.xcassets\\material_icon_alarm.imageset\\Contents.json"
             });
         }
     }
