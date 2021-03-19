@@ -113,8 +113,8 @@ namespace IconResizeUtility.App.Test
 
             _iOSResultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedSizes, false, "icon_");
             _iOSResultChecker.AssertIconCount(SrcDataDir, OutDir, expectedSizes);
-
-            new ProjectFileTester(new DroidProjectFileUpdater()).AssertContainsIcon(ProjectFile, new List<string>
+            ProjectFileTester tester = new ProjectFileTester(new IOSProjectFileUpdater());
+            tester.AssertContainsIcon(ProjectFile, new List<string>
             {
                 "Assets.xcassets\\icon_material_icon_bug.imageset\\icon_material_icon_bug_1x.png",
                 "Assets.xcassets\\icon_material_icon_bug.imageset\\icon_material_icon_bug_2x.png",
@@ -125,6 +125,9 @@ namespace IconResizeUtility.App.Test
                 "Assets.xcassets\\icon_material_icon_build.imageset\\icon_material_icon_build_3x.png",
                 "Assets.xcassets\\icon_material_icon_build.imageset\\Contents.json"
             });
+
+            tester.AssertContainsText(ProjectFile, "<ImageAsset Include=\"Assets.xcassets\\icon_material_icon_build.imageset\\icon_material_icon_build_3x.png\">");
+            tester.AssertContainsText(ProjectFile, "<ImageAsset Include=\"Assets.xcassets\\icon_material_icon_build.imageset\\Contents.json\">");
         }
     }
 }

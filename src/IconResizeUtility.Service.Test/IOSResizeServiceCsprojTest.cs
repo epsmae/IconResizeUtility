@@ -91,6 +91,10 @@ namespace IconResizeUtility.Service.Test
                 "Assets.xcassets\\material_icon_alarm.imageset\\material_icon_alarm_3x.png",
                 "Assets.xcassets\\material_icon_alarm.imageset\\Contents.json"
             });
+
+            _projectFileTester.AssertContainsText(OutProjectFile, "<ImageAsset Include=\"Assets.xcassets\\material_icon_alarm.imageset\\material_icon_alarm_3x.png\">");
+            _projectFileTester.AssertContainsText(OutProjectFile, "<ImageAsset Include=\"Assets.xcassets\\material_icon_alarm.imageset\\Contents.json\">");
+
         }
     }
 }

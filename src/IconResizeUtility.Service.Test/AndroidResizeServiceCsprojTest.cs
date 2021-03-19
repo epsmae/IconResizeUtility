@@ -81,6 +81,7 @@ namespace IconResizeUtility.Service.Test
             _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutIconDir, expectedResolutions, false, string.Empty);
             _resultChecker.AssertIconCount(SrcDataDir, OutIconDir, expectedResolutions);
             _csprojFileTester.AssertContainsIcon(OutProjectFile, new List<string>{ "material_icon_addchar.png", "material_icon_alarm.png" });
+            _csprojFileTester.AssertContainsText(OutProjectFile, "<AndroidResource Include=\"Resources\\drawable-xxhdpi\\material_icon_addchar.png\" />");
         }
     }
 }
