@@ -85,10 +85,10 @@ namespace IconResizeUtility.Service
 
                         Image image = new Image
                         {
-                            FileName = finalIconName,
-                            Idiom = "universal",
+                            Appearances = new string[]{},
                             Scale = scaleFactorString,
-                            Size = $"{requiredSize}x{requiredSize}"
+                            Idiom = "universal",
+                            FileName = finalIconName,
                         };
                         imagesInfo.Add(image);
                         string relativeIconPath = Path.Combine("Assets.xcassets", folderName, finalIconName);
@@ -104,13 +104,11 @@ namespace IconResizeUtility.Service
 
         private void CreateContentJson(string path, IList<Image> imagesInfo)
         {
-            Contents contents = new Contents();
-            contents.Images = imagesInfo.ToArray();
-            contents.Info = new Info
+            Contents contents = new Contents
             {
-                Author = "xcode",
-                TemplateRenderingIntent = "template",
-                Version = 1
+                Images = imagesInfo.ToArray(),
+                Properties = new Properties(),
+                Info = new Info {Author = "", Version = 1}
             };
 
             string fullFileName = Path.Combine(path, "Contents.json");

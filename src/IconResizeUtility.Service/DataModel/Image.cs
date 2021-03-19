@@ -4,16 +4,16 @@ namespace IconResizeUtility.Service.DataModel
 {
     public class Image
     {
-        [JsonProperty("filename")]
-        public string FileName { get; set; }
-
-        [JsonProperty("idiom")]
-        public string Idiom { get; set; }
+        [JsonProperty("appearances")]
+        public string[] Appearances { get; set; }
 
         [JsonProperty("scale")]
         public string Scale { get; set; }
 
-        [JsonProperty("size")]
-        public string Size { get; set; }
+        [JsonProperty("idiom")]
+        public string Idiom { get; set; }
+
+        [JsonProperty("filename")]
+        public string FileName { get; set; }
     }
 }
