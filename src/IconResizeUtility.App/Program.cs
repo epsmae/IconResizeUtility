@@ -110,7 +110,7 @@ namespace IconResizeUtility.App
                 }
                 else
                 {
-                    projectUpdater = new DroidProjectFileUpdater();
+                    projectUpdater = new IOSProjectFileUpdater();
                     projectUpdater.LoadProjectFile(csproj);
                 }
 

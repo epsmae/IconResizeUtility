@@ -29,5 +29,10 @@ namespace IconResizeUtility.TestInfrastructure
             }
         }
 
+        public void AssertContainsText(string csprojFile, string expectedText)
+        {
+            string fileContent = File.ReadAllText(csprojFile);
+            Assert.True(fileContent.Contains(expectedText));
+        }
     }
 }

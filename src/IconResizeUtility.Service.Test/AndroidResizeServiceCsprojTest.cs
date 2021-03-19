@@ -20,7 +20,7 @@ namespace IconResizeUtility.Service.Test
             }
         }
 
-        private string ProjectFile
+        private string SrcProjectFile
         {
             get
             {
@@ -28,11 +28,28 @@ namespace IconResizeUtility.Service.Test
             }
         }
 
+        private string OutProjectFile
+        {
+            get
+            {
+                return Path.Combine(OutDir, "ResizeUtility.App.Android.csproj");
+            }
+        }
+
         private string OutDir
         {
             get
             {
-                return Path.Combine(TestContext.CurrentContext.WorkDirectory, "out", "Icons");
+                return Path.Combine(TestContext.CurrentContext.WorkDirectory, "out");
+            }
+        }
+
+
+        private string OutIconDir
+        {
+            get
+            {
+                return Path.Combine(OutDir, "Icons");
             }
         }
 
@@ -57,13 +74,14 @@ namespace IconResizeUtility.Service.Test
         {
             IList<int> expectedResolutions = new List<int>(){48};
 
-            _csprojFileUpdater.LoadProjectFile(ProjectFile);
-            _service.Resize(SrcDataDir, OutDir, false, string.Empty, expectedResolutions);
-            _csprojFileUpdater.Save(ProjectFile);
+            _csprojFileUpdater.LoadProjectFile(SrcProjectFile);
+            _service.Resize(SrcDataDir, OutIconDir, false, string.Empty, expectedResolutions);
+            _csprojFileUpdater.Save(OutProjectFile);
 
-            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, false, string.Empty);
-            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
-            _csprojFileTester.AssertContainsIcon(ProjectFile, new List<string>{ "material_icon_addchar.png", "material_icon_alarm.png" });
+            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutIconDir, expectedResolutions, false, string.Empty);
+            _resultChecker.AssertIconCount(SrcDataDir, OutIconDir, expectedResolutions);
+            _csprojFileTester.AssertContainsIcon(OutProjectFile, new List<string>{ "material_icon_addchar.png", "material_icon_alarm.png" });
+            _csprojFileTester.AssertContainsText(OutProjectFile, "<AndroidResource Include=\"Resources\\drawable-xxhdpi\\material_icon_addchar.png\" />");
         }
     }
 }
