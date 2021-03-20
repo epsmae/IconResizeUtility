@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using IconResizeUtility.Service.DataModel;
 
 namespace IconResizeUtility.Service
 {
@@ -41,9 +42,8 @@ namespace IconResizeUtility.Service
             _imageRenamer = imageRenamer;
             _projectFileUpdater = projectFileUpdater;
         }
-
-
-        public void Resize(string sourcePath, string destinationPath, bool postfixSize, string prefix, IList<int> requiredSizes)
+        
+        public void Resize(string sourcePath, string destinationPath, bool postfixSize, string prefix, IList<int> requiredSizes, IList<RequiredColor> requiredColors = null)
         {
             string[] resolutionFolders = ResFolderAssociation.Keys.ToArray();
 
@@ -61,15 +61,11 @@ namespace IconResizeUtility.Service
 
                     foreach (int requiredSize in requiredSizes)
                     {
-                        string finalIconName;
-
+                        string finalIconName = baseIconName;
+                        
                         if (postfixSize || requiredSizes.Count > 1)
                         {
-                            finalIconName = _imageRenamer.AddPostfix(baseIconName, $"_{requiredSize}");
-                        }
-                        else
-                        {
-                            finalIconName = baseIconName;
+                            finalIconName = _imageRenamer.AddPostfix(finalIconName, $"_{requiredSize}");
                         }
 
                         if (!string.IsNullOrEmpty(prefix))
@@ -77,14 +73,31 @@ namespace IconResizeUtility.Service
                             finalIconName = _imageRenamer.AddPrefix(finalIconName, prefix);
                         }
 
-                        string destinationIconPath = Path.Combine(path, finalIconName);
-
                         int size = (int) (requiredSize * ResFolderAssociation[resolutionFolder]);
 
-                        _resizer.Resize(file.FullName, destinationIconPath, size, size);
+                        if (requiredColors != null && requiredColors.Any())
+                        {
+                            foreach (RequiredColor requiredColor in requiredColors)
+                            {
+                                string colorIconName = finalIconName;
+                                if (requiredColors.Count > 1)
+                                {
+                                    colorIconName = _imageRenamer.AddPostfix(colorIconName, $"_{requiredColor.ColorName}");
+                                }
 
-                        string relativeIconPath = Path.Combine("Resources", resolutionFolder, finalIconName);
-                        _projectFileUpdater.AddIcon(relativeIconPath);
+                                string destinationIconPath = Path.Combine(path, colorIconName);
+                                _resizer.Resize(file.FullName, destinationIconPath, size, size, requiredColor.ColorHexValue);
+                                string relativeIconPath = Path.Combine("Resources", resolutionFolder, colorIconName);
+                                _projectFileUpdater.AddIcon(relativeIconPath);
+                            }
+                        }
+                        else
+                        {
+                            string destinationIconPath = Path.Combine(path, finalIconName);
+                            _resizer.Resize(file.FullName, destinationIconPath, size, size);
+                            string relativeIconPath = Path.Combine("Resources", resolutionFolder, finalIconName);
+                            _projectFileUpdater.AddIcon(relativeIconPath);
+                        }
                     }
                 }
             }

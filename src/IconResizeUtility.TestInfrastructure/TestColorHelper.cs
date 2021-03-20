@@ -72,7 +72,6 @@ namespace IconResizeUtility.TestInfrastructure
             EnsureInTolerance(expectedColoer.Red, actualColor.Red, tolerance);
             EnsureInTolerance(expectedColoer.Green, actualColor.Green, tolerance);
             EnsureInTolerance(expectedColoer.Blue, actualColor.Blue, tolerance);
-            EnsureInTolerance(expectedColoer.Alpha, actualColor.Alpha, tolerance);
         }
 
         private static void EnsureInTolerance(byte expected, byte actual, int tolerance)

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using IconResizeUtility.Service.DataModel;
 using IconResizeUtility.TestInfrastructure;
 using NUnit.Framework;
 
@@ -79,6 +81,65 @@ namespace IconResizeUtility.Service.Test
 
             _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix);
             _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
+        }
+
+        [Test]
+        public void TestSingleColor()
+        {
+            IList<int> expectedResolutions = new List<int> { 48 };
+            string expectedPrefix = "ic_";
+            const bool postFixSize = false;
+
+            IList<RequiredColor> colors = new List<RequiredColor>
+            {
+                new RequiredColor
+                {
+                    ColorHexValue = "#FF0000",
+                    ColorName = "red"
+                }
+            };
+
+            _service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions, colors);
+
+            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix, colors);
+            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
+        }
+
+        [Test]
+        public void TestMultipleColors()
+        {
+            IList<int> expectedResolutions = new List<int> { 48 };
+            string expectedPrefix = "ic_";
+            const bool postFixSize = false;
+
+            IList<RequiredColor> colors = new List<RequiredColor>
+            {
+                new RequiredColor
+                {
+                    ColorHexValue = "#FF0000",
+                    ColorName = "red"
+                },
+                new RequiredColor
+                {
+                    ColorHexValue = "#00FF00",
+                    ColorName = "green"
+                },
+                new RequiredColor
+                {
+                    ColorHexValue = "#0000FF",
+                    ColorName = "blue"
+                },
+                new RequiredColor
+                {
+                    ColorHexValue = "#000000",
+                    ColorName = "black"
+                }
+            };
+
+            _service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions, colors);
+
+            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix, colors);
+            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions, colors);
         }
     }
 }
