@@ -63,11 +63,6 @@ namespace IconResizeUtility.Service
                     {
                         string finalIconName = baseIconName;
                         
-                        if (postfixSize || requiredSizes.Count > 1)
-                        {
-                            finalIconName = _imageRenamer.AddPostfix(finalIconName, $"_{requiredSize}");
-                        }
-
                         if (!string.IsNullOrEmpty(prefix))
                         {
                             finalIconName = _imageRenamer.AddPrefix(finalIconName, prefix);
@@ -83,6 +78,10 @@ namespace IconResizeUtility.Service
                                 if (requiredColors.Count > 1)
                                 {
                                     colorIconName = _imageRenamer.AddPostfix(colorIconName, $"_{requiredColor.ColorName}");
+                                    if (postfixSize || requiredSizes.Count > 1)
+                                    {
+                                        colorIconName = _imageRenamer.AddPostfix(colorIconName, $"_{requiredSize}");
+                                    }
                                 }
 
                                 string destinationIconPath = Path.Combine(path, colorIconName);
@@ -93,6 +92,10 @@ namespace IconResizeUtility.Service
                         }
                         else
                         {
+                            if (postfixSize || requiredSizes.Count > 1)
+                            {
+                                finalIconName = _imageRenamer.AddPostfix(finalIconName, $"_{requiredSize}");
+                            }
                             string destinationIconPath = Path.Combine(path, finalIconName);
                             _resizer.Resize(file.FullName, destinationIconPath, size, size);
                             string relativeIconPath = Path.Combine("Resources", resolutionFolder, finalIconName);

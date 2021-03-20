@@ -63,13 +63,13 @@ namespace IconResizeUtility.Service
                         baseIconName = _imageRenamer.AddPrefix(baseIconName, prefix);
                     }
 
-                    if (postfixSize || requiredSizes.Count > 1)
-                    {
-                        baseIconName = _imageRenamer.AddPostfix(baseIconName, $"_{requiredSize}pt");
-                    }
-                    
                     if (requiredColors == null || requiredColors.Count <= 1)
                     {
+                        if (postfixSize || requiredSizes.Count > 1)
+                        {
+                            baseIconName = _imageRenamer.AddPostfix(baseIconName, $"_{requiredSize}pt");
+                        }
+
                         string folderName = $"{Path.GetFileNameWithoutExtension(baseIconName)}.imageset";
                         string folderPath = Path.Combine(destinationPath, folderName);
 
@@ -87,6 +87,11 @@ namespace IconResizeUtility.Service
                         foreach (RequiredColor color in requiredColors)
                         {
                             string colorIconName = _imageRenamer.AddPostfix(baseIconName, $"_{color.ColorName}");
+
+                            if (postfixSize || requiredSizes.Count > 1)
+                            {
+                                colorIconName = _imageRenamer.AddPostfix(colorIconName, $"_{requiredSize}pt");
+                            }
 
                             string folderName = $"{Path.GetFileNameWithoutExtension(colorIconName)}.imageset";
                             string folderPath = Path.Combine(destinationPath, folderName);

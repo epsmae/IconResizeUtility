@@ -67,14 +67,17 @@ namespace IconResizeUtility.TestInfrastructure
         private void AssertContainsIconSize(string outputDirectory, string scaleFactor, string iconName, bool postfixSize, string prefix, int size, int expectedSize, IList<RequiredColor> requiredColors = null)
         {
             string adjustedName = GetIconName(iconName, postfixSize, prefix, size);
-
-            
-
-            
             
             if (requiredColors == null || requiredColors.Count == 1)
             {
+                if (postfixSize)
+                {
+                    adjustedName = _imageRenamer.AddPostfix(adjustedName, $"_{size}pt");
+                }
+
                 string folderPath = Path.Combine(outputDirectory, $"{Path.GetFileNameWithoutExtension(adjustedName)}.imageset");
+
+                adjustedName = _imageRenamer.AddPostfix(adjustedName, $"_{scaleFactor}");
                 AssertContainsIconSize(expectedSize, folderPath, adjustedName);
 
                 if (requiredColors != null && requiredColors.Any())
@@ -87,6 +90,11 @@ namespace IconResizeUtility.TestInfrastructure
                 foreach (RequiredColor color in requiredColors)
                 {
                     string colorIconName = _imageRenamer.AddPostfix(adjustedName, $"_{color.ColorName}");
+
+                    if (postfixSize)
+                    {
+                        colorIconName = _imageRenamer.AddPostfix(colorIconName, $"_{size}pt");
+                    }
 
                     string folderPath = Path.Combine(outputDirectory, $"{Path.GetFileNameWithoutExtension(colorIconName)}.imageset");
 
@@ -126,12 +134,7 @@ namespace IconResizeUtility.TestInfrastructure
         private string GetIconName(string iconName, bool postfixSize, string prefix, int size)
         {
             string baseName = _imageRenamer.ConvertToValidIconName(iconName);
-
-            if (postfixSize)
-            {
-                baseName = _imageRenamer.AddPostfix(baseName, $"_{size}pt");
-            }
-
+            
             if (!string.IsNullOrEmpty(prefix))
             {
                 baseName = _imageRenamer.AddPrefix(baseName, prefix);
