@@ -66,7 +66,9 @@ dotnet tool uninstall --global IconResizeUtility.App
 
 ### Resize with default sizes
 
-Create resized images with the android default sizes
+Create resized images with the android default sizes.
+
+See also [resize_default_droid.cmd](playground/resize_default_droid.cmd) and [resize_default_ios.cmd](playground/resize_default_ios.cmd).
 
 ```bash
 IconResizeUtility resize --type droid --dstFolder out --srcFolder src --prefix ic_
@@ -124,6 +126,8 @@ tree /F
 
 With a single size the postfix size can be set to false
 
+See also [resize_specific_droid.cmd](playground/resize_specific_droid.cmd) and [resize_specific_ios.cmd](playground/resize_specific_ios.cmd).
+
 ```bash
 IconResizeUtility resize --type droid --dstFolder out --srcFolder src --postfixSize false --iconSize 42
 Type: droid
@@ -155,12 +159,16 @@ tree /F
 
 ### Directly add to project file
 
+Files can be directly added to Xamarin iOS and Android projects.
+
+See also [resize_csproj_droid.cmd](playground/resize_csproj_droid.cmd) and [resize_csproj_ios.cmd](playground/resize_csproj_ios.cmd).
+
 ```bash
-IconResizeUtility resize --type droid --dstFolder out --srcFolder src --postfixSize false --iconSize 42 --csproj droid.csproj
+IconResizeUtility resize --type droid --dstFolder ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\Resources --srcFolder src --postfixSize false --iconSize 42 --csproj ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\ResizeUtility.App.Android.csproj
 Type: droid
 Source folder: src
-Destination folder: out
+Destination folder: ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\Resources
 Use icons sizes: 42
 PostfixSize: False
-Csproj: droid.csproj
+Csproj: ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\ResizeUtility.App.Android.csproj
 ```
