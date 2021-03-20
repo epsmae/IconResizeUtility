@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using IconResizeUtility.TestInfrastructure;
 using NUnit.Framework;
+using SkiaSharp;
 
 namespace IconResizeUtility.Service.Test
 {
@@ -32,11 +34,27 @@ namespace IconResizeUtility.Service.Test
             }
         }
 
+        private string TestIcon
+        {
+            get
+            {
+                return Path.Combine(TestDataDirectory, "Icons", "material_icon_addchar.png");
+            }
+        }
+
         private string DestinationImage
         {
             get
             {
                 return Path.Combine(WorkDirectory, "test_image_resized.png");
+            }
+        }
+
+        private string DestinationIcon
+        {
+            get
+            {
+                return Path.Combine(WorkDirectory, "material_icon_addchar_tinted.png");
             }
         }
 
@@ -66,6 +84,19 @@ namespace IconResizeUtility.Service.Test
 
             Assert.AreEqual(expectedWidth, resizedInfo.Width);
             Assert.AreEqual(expectedHeight, resizedInfo.Height);
+        }
+
+        [Test]
+        public void TestTint()
+        {
+            string hexColor = "33FFBB99";
+            SKColor expectedColor = SKColor.Parse(hexColor);
+            ImageResizer resizer = new ImageResizer();
+            resizer.Resize(TestIcon, DestinationIcon, 48, 48, hexColor);
+
+            SKColor actualColor = TestColorHelper.GetAverageColor(DestinationIcon);
+
+            TestColorHelper.AssertSameColor(expectedColor, actualColor);
         }
     }
 }

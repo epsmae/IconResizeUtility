@@ -42,7 +42,7 @@ namespace IconResizeUtility.Service
             _projectFileUpdater = projectFileUpdater;
         }
 
-        public void Resize(string sourcePath, string destinationPath, bool postfixSize, string prefix, IList<int> requiredSizes)
+        public void Resize(string sourcePath, string destinationPath, bool postfixSize, string prefix, IList<int> requiredSizes, IList<RequiredColor> requiredColors = null)
         {
             string[] resolutionFolders = ResNameAssociation.Keys.ToArray();
             
@@ -63,43 +63,83 @@ namespace IconResizeUtility.Service
                         baseIconName = _imageRenamer.AddPrefix(baseIconName, prefix);
                     }
 
-                    if (postfixSize || requiredSizes.Count > 1)
+                    if (requiredColors == null || requiredColors.Count <= 1)
                     {
-                        baseIconName = _imageRenamer.AddPostfix(baseIconName, $"_{requiredSize}pt");
-                    }
-
-
-                    string folderName = $"{Path.GetFileNameWithoutExtension(baseIconName)}.imageset";
-                    string folderPath = Path.Combine(destinationPath, folderName);
-                    EnsureDirectoryExists(folderPath);
-                    
-                    foreach (string scaleFactorString in resolutionFolders)
-                    {
-                        string finalIconName = _imageRenamer.AddPostfix(baseIconName, $"_{scaleFactorString}");
-                        
-                        string destinationIconPath = Path.Combine(folderPath, finalIconName);
-
-                        int size = (int)(requiredSize * ResNameAssociation[scaleFactorString]);
-
-                        _resizer.Resize(file.FullName, destinationIconPath, size, size);
-
-                        Image image = new Image
+                        if (postfixSize || requiredSizes.Count > 1)
                         {
-                            Appearances = new string[]{},
-                            Scale = scaleFactorString,
-                            Idiom = "universal",
-                            FileName = finalIconName,
-                        };
-                        imagesInfo.Add(image);
-                        string relativeIconPath = Path.Combine("Assets.xcassets", folderName, finalIconName);
-                        _projectFileUpdater.AddIcon(relativeIconPath);
-                    }
+                            baseIconName = _imageRenamer.AddPostfix(baseIconName, $"_{requiredSize}pt");
+                        }
 
-                    CreateContentJson(folderPath, imagesInfo);
-                    string relativeContentFilePath = Path.Combine("Assets.xcassets", folderName, "Contents.json");
-                    _projectFileUpdater.AddIcon(relativeContentFilePath);
+                        string folderName = $"{Path.GetFileNameWithoutExtension(baseIconName)}.imageset";
+                        string folderPath = Path.Combine(destinationPath, folderName);
+
+                        if (requiredColors != null && requiredColors.Any())
+                        {
+                            CreateIcons(folderPath, resolutionFolders, baseIconName, requiredSize, file, imagesInfo, folderName, requiredColors.First());
+                        }
+                        else
+                        {
+                            CreateIcons(folderPath, resolutionFolders, baseIconName, requiredSize, file, imagesInfo, folderName);
+                        }
+                    }
+                    else
+                    {
+                        foreach (RequiredColor color in requiredColors)
+                        {
+                            string colorIconName = _imageRenamer.AddPostfix(baseIconName, $"_{color.ColorName}");
+
+                            if (postfixSize || requiredSizes.Count > 1)
+                            {
+                                colorIconName = _imageRenamer.AddPostfix(colorIconName, $"_{requiredSize}pt");
+                            }
+
+                            string folderName = $"{Path.GetFileNameWithoutExtension(colorIconName)}.imageset";
+                            string folderPath = Path.Combine(destinationPath, folderName);
+                            CreateIcons(folderPath, resolutionFolders, colorIconName, requiredSize, file, imagesInfo, folderName, color);
+                        }
+                    }
                 }
             }
+        }
+
+        private void CreateIcons(string folderPath, string[] resolutionFolders, string baseIconName,
+            int requiredSize, FileInfo file, IList<Image> imagesInfo, string folderName, RequiredColor color= null)
+        {
+            EnsureDirectoryExists(folderPath);
+
+            foreach (string scaleFactorString in resolutionFolders)
+            {
+                string finalIconName = _imageRenamer.AddPostfix(baseIconName, $"_{scaleFactorString}");
+
+                string destinationIconPath = Path.Combine(folderPath, finalIconName);
+
+                int size = (int) (requiredSize * ResNameAssociation[scaleFactorString]);
+
+
+                if (color != null)
+                {
+                    _resizer.Resize(file.FullName, destinationIconPath, size, size, color.ColorHexValue);
+                }
+                else
+                {
+                    _resizer.Resize(file.FullName, destinationIconPath, size, size);
+                }
+
+                Image image = new Image
+                {
+                    Appearances = new string[] { },
+                    Scale = scaleFactorString,
+                    Idiom = "universal",
+                    FileName = finalIconName,
+                };
+                imagesInfo.Add(image);
+                string relativeIconPath = Path.Combine("Assets.xcassets", folderName, finalIconName);
+                _projectFileUpdater.AddIcon(relativeIconPath);
+            }
+
+            CreateContentJson(folderPath, imagesInfo);
+            string relativeContentFilePath = Path.Combine("Assets.xcassets", folderName, "Contents.json");
+            _projectFileUpdater.AddIcon(relativeContentFilePath);
         }
 
         private void CreateContentJson(string path, IList<Image> imagesInfo)
