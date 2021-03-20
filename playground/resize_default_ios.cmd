@@ -1,0 +1,1 @@
+IconResizeUtility resize --type ios --dstFolder out --srcFolder src --prefix ic_
