@@ -1,1 +1,1 @@
-IconResizeUtility resize --type ios --dstFolder ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\Resources --srcFolder src --postfixSize false --iconSize 42 --csproj ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.iOS\ResizeUtility.App.iOS.csproj
+IconResizeUtility resize --type ios --dstFolder ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.iOS\Assets.xcassets --srcFolder src --postfixSize false --iconSize 42 --csproj ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.iOS\ResizeUtility.App.iOS.csproj
