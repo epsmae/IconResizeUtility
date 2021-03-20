@@ -1,0 +1,1 @@
+IconResizeUtility resize --type ios --dstFolder ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.iOS\Assets.xcassets --srcFolder src --postfixSize false --iconSize "18,28,38" --csproj ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.iOS\ResizeUtility.App.iOS.csproj --color "{\"red\":\"#FF0000\",\"green\":\"#00FF00\"}"

@@ -19,11 +19,12 @@ I often get icons from diffrent designers and usually the icons are not in the c
 | 1    |Android image resizing                            | implemented         |
 | 2    |iOS image resizing                                | implemented         |
 | 3    |Add icons directly to Xamarin .sln                | implemented         |
-| 4    |Add opt out for rename to valid icon name         | planned             |
-| 5    |Cache resized images to improve performance       | planned             |
-| 6    |Move to res folders Android / iOS without resize  | planned             |
-| 7    |Rename icon name                                  | planned             |
-| 8    |Provide optional skip for existing                | planned             |
+| 4    |Icon tint color                                   | implemented         |
+| 5    |Add opt out for rename to valid icon name         | planned             |
+| 6    |Cache resized images to improve performance       | planned             |
+| 7    |Move to res folders Android / iOS without resize  | planned             |
+| 8    |Rename icon name                                  | planned             |
+| 9    |Provide optional skip for existing                | planned             |
 
 
 
@@ -52,13 +53,14 @@ dotnet tool uninstall --global IconResizeUtility.App
 
 |Argument       |Description                                                           |Optional             |
 |---------------|----------------------------------------------------------------------|---------------------|
-| --type        |droid or ios                                                          | No                  |
+| --type        |Droid or iOS                                                          | No                  |
 | --srcFolder   |Folder where the icons are size > out size                            | No                  |
 | --dstFolder   |Folder where the output will be written to                            | No                  |
 | --iconSize    |Size of the icon (without scale factor)                               | Yes                 |
 | --prefix      |Adds a prefix to the icon names                                       | Yes                 |
 | --postfixSize |The postfix size can be skipt if only 1 size is created               | Yes                 |
-| --csproj      |full path to the Xamarin .csproj file where the icons should be added | Yes                 |
+| --csproj      |Full path to the Xamarin .csproj file where the icons should be added | Yes                 |
+| --color       |Color #55FF5560 or "{\"red\":\"#FF0000\",\"green\":\"#00FF00\"}"      | Yes                 |
 
 ### resize
 
@@ -171,4 +173,31 @@ Destination folder: ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Androi
 Use icons sizes: 42
 PostfixSize: False
 Csproj: ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\ResizeUtility.App.Android.csproj
+```
+
+### Tint color icons
+
+Icons can be tinted.
+See also [resize_csproj_droid_single_color.cmd](playground/resize_csproj_droid_single_color.cmd) and [resize_csproj_droid_multiple_color.cmd](playground/resize_csproj_droid_multiple_color.cmd).
+
+```bash
+IconResizeUtility resize --type droid --dstFolder ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\Resources --srcFolder src --postfixSize false --iconSize 42 --csproj ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\ResizeUtility.App.Android.csproj --color #FF0000
+Type: droid
+Source folder: src
+Destination folder: ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\Resources
+Use icons sizes: 42
+PostfixSize: False
+Csproj: ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\ResizeUtility.App.Android.csproj
+Color: #FF0000
+```
+
+```bash
+IconResizeUtility resize --type droid --dstFolder ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\Resources --srcFolder src --postfixSize false --iconSize 42 --csproj ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\ResizeUtility.App.Android.csproj --color "{\"red\":\"#FF0000\",\"green\":\"#00FF00\"}"
+Type: droid
+Source folder: src
+Destination folder: ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\Resources
+Use icons sizes: 42
+PostfixSize: False
+Csproj: ResizeUtility.App\ResizeUtility.App\ResizeUtility.App.Android\ResizeUtility.App.Android.csproj
+Color: {"red":"#FF0000","green":"#00FF00"}
 ```
