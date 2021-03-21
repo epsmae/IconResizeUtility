@@ -7,7 +7,7 @@ I often get icons from diffrent designers and usually the icons are not in the c
 
 |Description      |Link        |
 |-----------------|------------|
-|Sonarcloud       |[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=epsmae_IconResizeUtility&metric=alert_status)](https://sonarcloud.io/dashboard?id=epsmae_IconResizeUtility)|
+|Sonarcloud       |[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=epsmae_IconResizeUtility&metric=alert_status)](https://sonarcloud.io/dashboard?id=epsmae_IconResizeUtility) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=epsmae_IconResizeUtility&metric=ncloc)](https://sonarcloud.io/dashboard?id=epsmae_IconResizeUtility) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=epsmae_IconResizeUtility&metric=coverage)](https://sonarcloud.io/dashboard?id=epsmae_IconResizeUtility)|
 |Build            |[![Build Status](https://my-tech-projects.visualstudio.com/Icon%20Resize%20Utility/_apis/build/status/Release%20Build?branchName=master)](https://my-tech-projects.visualstudio.com/Icon%20Resize%20Utility/_build/latest?definitionId=15&branchName=master)|
 |Nuget            |[![Nuget](https://img.shields.io/nuget/v/IconResizeUtility.App)](https://www.nuget.org/packages/IconResizeUtility.App)|
 |Nuget Prerelease |![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/IconResizeUtility.App)
