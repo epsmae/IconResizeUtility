@@ -12,5 +12,10 @@
   <ItemGroup>
     <ProjectReference Include="..\IconResizeUtility.Service\IconResizeUtility.Service.csproj" />
   </ItemGroup>
+  
+  <PropertyGroup>
+    <!-- Exclude the project from analysis -->
+    <SonarQubeExclude>true</SonarQubeExclude>
+  </PropertyGroup>
 
 </Project>

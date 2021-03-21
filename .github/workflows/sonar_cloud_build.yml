@@ -42,7 +42,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"epsmae_IconResizeUtility" /o:"techprojects" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"epsmae_IconResizeUtility" /o:"techprojects" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="src/*/TestResults/*/coverage.opencover.xml" /d:sonar.cs.vstest.reportsPaths="src/*/TestResults/*.trx"
           dotnet build .\src\IconResizeUtility.sln --no-incremental
-          dotnet test .\src --collect "Code Coverage"
+          dotnet test .\src /p:CollectCoverage=true /p:CoverletOutputFormat=opencover -l:trx
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
