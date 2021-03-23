@@ -137,7 +137,7 @@ namespace IconResizeUtility.App
             services.AddSingleton(GetCsProjUpdater(type.ToLower(), csproj));
             services.AddSingleton(new ImageRenamer());
             services.AddSingleton(new ImageResizer());
-            services.AddSingleton(new ImageResizer());
+            services.AddSingleton<IIconResizeUtilityService, IconResizeUtitlityService>();
 
             if (type.ToLower() == "ios")
             {
@@ -150,33 +150,24 @@ namespace IconResizeUtility.App
 
             IServiceProvider serviceProvider = services.BuildServiceProvider();
 
-            IProjectFileUpdater projectFileUpdater = serviceProvider.GetService<IProjectFileUpdater>();
-            IImageResizeService resizeService = serviceProvider.GetService<IImageResizeService>(); //new IOSImageResizeService(imageResizer, imageRenamer, projectUpdater));
-            resizeService.Resize(srcFolder, dstFolder, postfixSize, prefix, sizeList, colors);
-            projectFileUpdater.Save(csproj);
+            IIconResizeUtilityService utilityService = serviceProvider.GetService<IIconResizeUtilityService>();
+            utilityService.Resize(srcFolder, dstFolder, csproj, postfixSize, prefix, sizeList, colors);
         }
 
         private static IProjectFileUpdater GetCsProjUpdater(string type, string csproj)
         {
-            IProjectFileUpdater projectUpdater;
-
             if (type == "ios" && csproj != null)
             {
-                projectUpdater = new IOSProjectFileUpdater();
-                projectUpdater.LoadProjectFile(csproj);
-                
+                return new IOSProjectFileUpdater();
+
             }
-            else if (type == "droid" && csproj != null)
+            
+            if (type == "droid" && csproj != null)
             {
-                projectUpdater = new DroidProjectFileUpdater();
-                projectUpdater.LoadProjectFile(csproj);
-            }
-            else
-            {
-                projectUpdater = new ProjectUpdaterStub();
+                return new DroidProjectFileUpdater();
             }
 
-            return projectUpdater;
+            return new ProjectUpdaterStub();
         }
     }
 }
