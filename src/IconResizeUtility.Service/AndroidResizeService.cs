@@ -5,7 +5,7 @@ using IconResizeUtility.Service.DataModel;
 
 namespace IconResizeUtility.Service
 {
-    public class AndroidResizeService
+    public class AndroidResizeService : IImageResizeService
     {
         private readonly ImageResizer _resizer;
         private readonly ImageRenamer _imageRenamer;

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace IconResizeUtility.Service
 {
-    public class IOSImageResizeService
+    public class IOSImageResizeService : IImageResizeService
     {
         /// <summary>
         /// Association between resource name and scale factor

@@ -4,6 +4,8 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using IconResizeUtility.Service;
 using IconResizeUtility.Service.DataModel;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace IconResizeUtility.App
@@ -68,6 +70,9 @@ namespace IconResizeUtility.App
 
         private static void Resize(string type, string srcFolder, string dstFolder, string prefix, string iconSize, bool postfixSize, string csproj, string color)
         {
+            ServiceCollection services = new ServiceCollection();
+            services.AddLogging(builder => builder.AddConsole());
+
             if (!(type.ToLower() == "ios" || type.ToLower() == "droid"))
             {
                 Console.WriteLine("--type only allows ios or droid");
@@ -128,45 +133,50 @@ namespace IconResizeUtility.App
                     }
                 }
             }
-
             
-            ImageRenamer imageRenamer = new ImageRenamer();
-            ImageResizer imageResizer = new ImageResizer();
-            IProjectFileUpdater projectUpdater;
+            services.AddSingleton(GetCsProjUpdater(type.ToLower(), csproj));
+            services.AddSingleton(new ImageRenamer());
+            services.AddSingleton(new ImageResizer());
+            services.AddSingleton(new ImageResizer());
 
             if (type.ToLower() == "ios")
             {
-                if (string.IsNullOrEmpty(csproj))
-                {
-                    projectUpdater = new ProjectUpdaterStub();
-                }
-                else
-                {
-                    projectUpdater = new IOSProjectFileUpdater();
-                    projectUpdater.LoadProjectFile(csproj);
-                }
-
-                IOSImageResizeService resizeService = new IOSImageResizeService(imageResizer, imageRenamer, projectUpdater);
-                resizeService.Resize(srcFolder, dstFolder, postfixSize, prefix, sizeList, colors);
-                projectUpdater.Save(csproj);
+                services.AddSingleton<IImageResizeService, IOSImageResizeService>();
             }
             else
             {
-                
-                if (string.IsNullOrEmpty(csproj))
-                {
-                    projectUpdater = new ProjectUpdaterStub();
-                }
-                else
-                {
-                    projectUpdater = new DroidProjectFileUpdater();
-                    projectUpdater.LoadProjectFile(csproj);
-                }
-
-                AndroidResizeService resizeService = new AndroidResizeService(imageResizer, imageRenamer, projectUpdater);
-                resizeService.Resize(srcFolder, dstFolder, postfixSize, prefix, sizeList, colors);
-                projectUpdater.Save(csproj);
+                services.AddSingleton<IImageResizeService, AndroidResizeService>();
             }
+
+            IServiceProvider serviceProvider = services.BuildServiceProvider();
+
+            IProjectFileUpdater projectFileUpdater = serviceProvider.GetService<IProjectFileUpdater>();
+            IImageResizeService resizeService = serviceProvider.GetService<IImageResizeService>(); //new IOSImageResizeService(imageResizer, imageRenamer, projectUpdater));
+            resizeService.Resize(srcFolder, dstFolder, postfixSize, prefix, sizeList, colors);
+            projectFileUpdater.Save(csproj);
+        }
+
+        private static IProjectFileUpdater GetCsProjUpdater(string type, string csproj)
+        {
+            IProjectFileUpdater projectUpdater;
+
+            if (type == "ios" && csproj != null)
+            {
+                projectUpdater = new IOSProjectFileUpdater();
+                projectUpdater.LoadProjectFile(csproj);
+                
+            }
+            else if (type == "droid" && csproj != null)
+            {
+                projectUpdater = new DroidProjectFileUpdater();
+                projectUpdater.LoadProjectFile(csproj);
+            }
+            else
+            {
+                projectUpdater = new ProjectUpdaterStub();
+            }
+
+            return projectUpdater;
         }
     }
 }
