@@ -5,10 +5,10 @@ using IconResizeUtility.Service.DataModel;
 
 namespace IconResizeUtility.Service
 {
-    public class AndroidResizeService : IImageResizeService
+    public class DroidResizeService : IImageResizeService
     {
-        private readonly ImageResizer _resizer;
-        private readonly ImageRenamer _imageRenamer;
+        private readonly IImageResizer _resizer;
+        private readonly IImageRenamer _imageRenamer;
         private readonly IProjectFileUpdater _projectFileUpdater;
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace IconResizeUtility.Service
             48
         };
         
-        public AndroidResizeService(ImageResizer resizer, ImageRenamer imageRenamer, IProjectFileUpdater projectFileUpdater)
+        public DroidResizeService(IImageResizer resizer, IImageRenamer imageRenamer, IProjectFileUpdater projectFileUpdater)
         {
             _resizer = resizer;
             _imageRenamer = imageRenamer;

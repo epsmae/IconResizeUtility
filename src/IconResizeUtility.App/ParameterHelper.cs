@@ -32,7 +32,7 @@ namespace IconResizeUtility.App
             {
                 if (color.StartsWith("#"))
                 {
-                    colors.Add(new RequiredColor() { ColorHexValue = color });
+                    colors.Add(new RequiredColor { ColorHexValue = color });
                 }
                 else
                 {
@@ -69,7 +69,7 @@ namespace IconResizeUtility.App
             }
             else
             {
-                sizeList.AddRange(AndroidResizeService.DefaultRequiredSizes);
+                sizeList.AddRange(DroidResizeService.DefaultRequiredSizes);
             }
 
             return sizeList;

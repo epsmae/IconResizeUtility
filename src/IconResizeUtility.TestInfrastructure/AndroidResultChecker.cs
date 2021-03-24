@@ -26,11 +26,11 @@ namespace IconResizeUtility.TestInfrastructure
             foreach (FileInfo file in srcFolderInfo.EnumerateFiles())
             {
                 cnt++;
-                foreach (string folder in AndroidResizeService.ResFolderAssociation.Keys.ToArray())
+                foreach (string folder in DroidResizeService.ResFolderAssociation.Keys.ToArray())
                 {
                     foreach (int expectedResolution in expectedResolutions)
                     {
-                        int expectedSize = (int)(expectedResolution * AndroidResizeService.ResFolderAssociation[folder]);
+                        int expectedSize = (int)(expectedResolution * DroidResizeService.ResFolderAssociation[folder]);
 
                         if (requiredColors == null || requiredColors.Count <= 1)
                         {
@@ -79,11 +79,11 @@ namespace IconResizeUtility.TestInfrastructure
             int expectedCount;
             if (expectedColors != null && expectedColors.Count > 0)
             {
-                expectedCount = srcFileCount * expectedResolutions.Count * AndroidResizeService.ResFolderAssociation.Count * expectedColors.Count;
+                expectedCount = srcFileCount * expectedResolutions.Count * DroidResizeService.ResFolderAssociation.Count * expectedColors.Count;
             }
             else
             {
-                expectedCount = srcFileCount * expectedResolutions.Count * AndroidResizeService.ResFolderAssociation.Count;
+                expectedCount = srcFileCount * expectedResolutions.Count * DroidResizeService.ResFolderAssociation.Count;
             }
 
             Assert.AreEqual(expectedCount, iconCount);

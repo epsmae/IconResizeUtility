@@ -31,11 +31,11 @@ namespace IconResizeUtility.Service
             48
         };
 
-        private readonly ImageResizer _resizer;
-        private readonly ImageRenamer _imageRenamer;
+        private readonly IImageResizer _resizer;
+        private readonly IImageRenamer _imageRenamer;
         private readonly IProjectFileUpdater _projectFileUpdater;
 
-        public IOSImageResizeService(ImageResizer resizer, ImageRenamer imageRenamer, IProjectFileUpdater projectFileUpdater)
+        public IOSImageResizeService(IImageResizer resizer, IImageRenamer imageRenamer, IProjectFileUpdater projectFileUpdater)
         {
             _resizer = resizer;
             _imageRenamer = imageRenamer;

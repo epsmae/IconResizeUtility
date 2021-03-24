@@ -73,8 +73,8 @@ namespace IconResizeUtility.App
             ServiceCollection services = new ServiceCollection();
             services.AddLogging(builder => builder.AddConsole());
             services.AddSingleton(GetCsProjUpdater(args.Platform, args.Csproj));
-            services.AddSingleton(new ImageRenamer());
-            services.AddSingleton(new ImageResizer());
+            services.AddSingleton<IImageRenamer, ImageRenamer>();
+            services.AddSingleton<IImageResizer, ImageResizer>();
             services.AddSingleton<IArgumentsPrinter, ArgumentsPrinter>();
             services.AddSingleton<IIconResizeUtilityService, IconResizeUtitlityService>();
             AddResizeService(services, args.Platform);
@@ -95,7 +95,7 @@ namespace IconResizeUtility.App
             }
             else
             {
-                serviceCollection.AddSingleton<IImageResizeService, AndroidResizeService>();
+                serviceCollection.AddSingleton<IImageResizeService, DroidResizeService>();
             }
         }
 

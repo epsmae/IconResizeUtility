@@ -10,7 +10,7 @@ namespace IconResizeUtility.Service.Test
     public class AndroidResizeServiceTest
     {
         private AndroidResultChecker _resultChecker;
-        private AndroidResizeService _service;
+        private DroidResizeService _service;
 
         private string SrcDataDir
         {
@@ -35,7 +35,7 @@ namespace IconResizeUtility.Service.Test
             ImageResizer resizer = new ImageResizer();
             ImageRenamer imageRenamer = new ImageRenamer();
             _resultChecker = new AndroidResultChecker(resizer, imageRenamer);
-            _service = new AndroidResizeService(resizer, imageRenamer, new ProjectUpdaterStub());
+            _service = new DroidResizeService(resizer, imageRenamer, new ProjectUpdaterStub());
 
 
             if (Directory.Exists(OutDir))
@@ -47,7 +47,7 @@ namespace IconResizeUtility.Service.Test
         [Test]
         public void TestResize()
         {
-            IList<int> expectedResolutions = AndroidResizeService.DefaultRequiredSizes;
+            IList<int> expectedResolutions = DroidResizeService.DefaultRequiredSizes;
             string expectedPrefix = "ic_";
             const bool postFixSize = true;
 
@@ -60,7 +60,7 @@ namespace IconResizeUtility.Service.Test
         [Test]
         public void TestResizeWithoutPrefix()
         {
-            IList<int> expectedResolutions = AndroidResizeService.DefaultRequiredSizes;
+            IList<int> expectedResolutions = DroidResizeService.DefaultRequiredSizes;
             string expectedPrefix = "";
             const bool postFixSize = true;
 

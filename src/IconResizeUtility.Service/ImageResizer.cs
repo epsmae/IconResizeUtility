@@ -3,7 +3,7 @@ using SkiaSharp;
 
 namespace IconResizeUtility.Service
 {
-    public class ImageResizer
+    public class ImageResizer : IImageResizer
     {
         /// <summary>
         /// Resize an image

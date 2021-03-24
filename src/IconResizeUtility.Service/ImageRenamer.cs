@@ -2,7 +2,7 @@
 
 namespace IconResizeUtility.Service
 {
-    public class ImageRenamer
+    public class ImageRenamer : IImageRenamer
     {
         private readonly Regex _regex;
 

@@ -59,7 +59,7 @@ namespace IconResizeUtility.Service.Test
         [Test]
         public void TestResizeWithoutPrefix()
         {
-            IList<int> expectedResolutions = AndroidResizeService.DefaultRequiredSizes;
+            IList<int> expectedResolutions = DroidResizeService.DefaultRequiredSizes;
             string expectedPrefix = "";
             const bool postFixSize = true;
 

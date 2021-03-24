@@ -90,7 +90,7 @@ namespace IconResizeUtility.App.Test
         [Test]
         public void TestResizeWithoutSize()
         {
-            IList<int> expectedSizes = AndroidResizeService.DefaultRequiredSizes;
+            IList<int> expectedSizes = DroidResizeService.DefaultRequiredSizes;
 
             Program.Main(new[] { "resize", "--type", "droid", "--dstFolder", OutIconDir, "--srcFolder", SrcDataDir, "--prefix", "icon_", "--postfixSize", "false" });
 
