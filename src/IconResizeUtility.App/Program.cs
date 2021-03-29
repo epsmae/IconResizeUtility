@@ -58,17 +58,16 @@ namespace IconResizeUtility.App
                 }
             };
 
-            resizeCommand.Handler = CommandHandler.Create((string type, string srcFolder, string dstFolder, string prefix, string iconSize, bool postfixSize, string csproj, string color) =>
-                    Resize(type, srcFolder, dstFolder, prefix, iconSize, postfixSize, csproj, color));
+            resizeCommand.Handler = CommandHandler.Create((ProgArgs progArgs) => Resize(progArgs));
             
             rootCommand.AddCommand(resizeCommand);
 
             rootCommand.Invoke(args);
         }
 
-        private static void Resize(string type, string srcFolder, string dstFolder, string prefix, string iconSize, bool postfixSize, string csproj, string color)
+        private static void Resize(ProgArgs progArgs)
         {
-            Arguments args = ParameterHelper.Parse(type, srcFolder, dstFolder, prefix, iconSize, postfixSize, csproj, color);
+            Arguments args = ParameterHelper.Parse(progArgs);
             
             ServiceCollection services = new ServiceCollection();
             services.AddLogging(builder => builder.AddConsole());

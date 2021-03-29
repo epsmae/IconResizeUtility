@@ -8,19 +8,18 @@ namespace IconResizeUtility.App
 {
     public static class ParameterHelper
     {
-        public static Arguments Parse(string type, string srcFolder, string dstFolder, string prefix, string iconSize,
-            bool postfixSize, string csproj, string color)
+        public static Arguments Parse(ProgArgs progArgs)
         {
             return new Arguments
             {
-                Platform = GetPlatform(type),
-                SourceFolder = srcFolder,
-                DestinationFolder = dstFolder,
-                Prefix = prefix,
-                PostfixSize = postfixSize,
-                Csproj = csproj,
-                Sizes = ParseSizes(iconSize, GetPlatform(type)),
-                Colors = ParseColors(color)
+                Platform = GetPlatform(progArgs.Type),
+                SourceFolder = progArgs.SrcFolder,
+                DestinationFolder = progArgs.DstFolder,
+                Prefix = progArgs.Prefix,
+                PostfixSize = progArgs.PostfixSize,
+                Csproj = progArgs.Csproj,
+                Sizes = ParseSizes(progArgs.IconSize, GetPlatform(progArgs.Type)),
+                Colors = ParseColors(progArgs.Color)
             };
         }
 
