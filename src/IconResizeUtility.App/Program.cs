@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using IconResizeUtility.App.DataModel;
 using IconResizeUtility.Service;
-using IconResizeUtility.Service.DataModel;
-using Newtonsoft.Json;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace IconResizeUtility.App
 {
@@ -58,115 +58,59 @@ namespace IconResizeUtility.App
                 }
             };
 
-            resizeCommand.Handler = CommandHandler.Create((string type, string srcFolder, string dstFolder, string prefix, string iconSize, bool postfixSize, string csproj, string color) =>
-                    Resize(type, srcFolder, dstFolder, prefix, iconSize, postfixSize, csproj, color));
+            resizeCommand.Handler = CommandHandler.Create((ProgArgs progArgs) => Resize(progArgs));
             
             rootCommand.AddCommand(resizeCommand);
 
             rootCommand.Invoke(args);
         }
 
-        private static void Resize(string type, string srcFolder, string dstFolder, string prefix, string iconSize, bool postfixSize, string csproj, string color)
+        private static void Resize(ProgArgs progArgs)
         {
-            if (!(type.ToLower() == "ios" || type.ToLower() == "droid"))
-            {
-                Console.WriteLine("--type only allows ios or droid");
-                return;
-            }
-
-            List<int> sizeList = new List<int>();
-            Console.WriteLine($"Type: {type}");
-            Console.WriteLine($"Source folder: {srcFolder}");
-            Console.WriteLine($"Destination folder: {dstFolder}");
-            if (!string.IsNullOrEmpty(prefix))
-            {
-                Console.WriteLine($"Prefix: {prefix}");
-            }
-
-            if (string.IsNullOrEmpty(iconSize))
-            {
-                sizeList.AddRange(AndroidResizeService.DefaultRequiredSizes);
-            }
-            else
-            {
-                string[] sizes = iconSize.Replace(" ", "").Split(',');
-                foreach (string size in sizes)
-                {
-                    sizeList.Add(int.Parse(size));
-                }
-            }
-
-            Console.WriteLine($"Use icons sizes: {string.Join(", ", sizeList)}");
-
-            Console.WriteLine($"PostfixSize: {postfixSize || sizeList.Count > 1}");
-
-            if (!string.IsNullOrEmpty(csproj))
-            {
-                Console.WriteLine($"Csproj: {csproj}");
-            }
-
-            IList<RequiredColor> colors = new List<RequiredColor>();
-
-            if (!string.IsNullOrEmpty(color))
-            {
-                Console.WriteLine($"Color: {color}");
-
-                if (color.StartsWith("#"))
-                {
-                    colors.Add(new RequiredColor(){ColorHexValue = color});
-                }
-                else
-                {
-                    IDictionary<string, string> items = JsonConvert.DeserializeObject<Dictionary<string, string>>(color);
-                    foreach (KeyValuePair<string, string> item in items)
-                    {
-                        colors.Add(new RequiredColor
-                        {
-                            ColorName = item.Key,
-                            ColorHexValue = item.Value
-                        });
-                    }
-                }
-            }
-
+            Arguments args = ParameterHelper.Parse(progArgs);
             
-            ImageRenamer imageRenamer = new ImageRenamer();
-            ImageResizer imageResizer = new ImageResizer();
-            IProjectFileUpdater projectUpdater;
+            ServiceCollection services = new ServiceCollection();
+            services.AddLogging(builder => builder.AddConsole());
+            services.AddSingleton(GetCsProjUpdater(args.Platform, args.Csproj));
+            services.AddSingleton<IImageRenamer, ImageRenamer>();
+            services.AddSingleton<IImageResizer, ImageResizer>();
+            services.AddSingleton<IArgumentsPrinter, ArgumentsPrinter>();
+            services.AddSingleton<IIconResizeUtilityService, IconResizeUtitlityService>();
+            AddResizeService(services, args.Platform);
+            IServiceProvider serviceProvider = services.BuildServiceProvider();
 
-            if (type.ToLower() == "ios")
+            IArgumentsPrinter printer = serviceProvider.GetService<IArgumentsPrinter>();
+            printer.PrintArguments(args);
+
+            IIconResizeUtilityService utilityService = serviceProvider.GetService<IIconResizeUtilityService>();
+            utilityService.Resize(args.SourceFolder, args.DestinationFolder, args.Csproj, args.PostfixSize, args.Prefix, args.Sizes, args.Colors);
+        }
+
+        private static void AddResizeService(IServiceCollection serviceCollection, EPlatforms platform)
+        {
+            if (platform == EPlatforms.Ios)
             {
-                if (string.IsNullOrEmpty(csproj))
-                {
-                    projectUpdater = new ProjectUpdaterStub();
-                }
-                else
-                {
-                    projectUpdater = new IOSProjectFileUpdater();
-                    projectUpdater.LoadProjectFile(csproj);
-                }
-
-                IOSImageResizeService resizeService = new IOSImageResizeService(imageResizer, imageRenamer, projectUpdater);
-                resizeService.Resize(srcFolder, dstFolder, postfixSize, prefix, sizeList, colors);
-                projectUpdater.Save(csproj);
+                serviceCollection.AddSingleton<IImageResizeService, IOSImageResizeService>();
             }
             else
             {
-                
-                if (string.IsNullOrEmpty(csproj))
-                {
-                    projectUpdater = new ProjectUpdaterStub();
-                }
-                else
-                {
-                    projectUpdater = new DroidProjectFileUpdater();
-                    projectUpdater.LoadProjectFile(csproj);
-                }
-
-                AndroidResizeService resizeService = new AndroidResizeService(imageResizer, imageRenamer, projectUpdater);
-                resizeService.Resize(srcFolder, dstFolder, postfixSize, prefix, sizeList, colors);
-                projectUpdater.Save(csproj);
+                serviceCollection.AddSingleton<IImageResizeService, DroidResizeService>();
             }
+        }
+
+        private static IProjectFileUpdater GetCsProjUpdater(EPlatforms platform, string csproj)
+        {
+            if (platform == EPlatforms.Ios && csproj != null)
+            {
+                return new IOSProjectFileUpdater();
+            }
+            
+            if (platform == EPlatforms.Droid && csproj != null)
+            {
+                return new DroidProjectFileUpdater();
+            }
+
+            return new ProjectUpdaterStub();
         }
     }
 }

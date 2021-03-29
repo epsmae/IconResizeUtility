@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace IconResizeUtility.Service
 {
-    public class IOSImageResizeService
+    public class IOSImageResizeService : IImageResizeService
     {
         /// <summary>
         /// Association between resource name and scale factor
@@ -31,11 +31,11 @@ namespace IconResizeUtility.Service
             48
         };
 
-        private readonly ImageResizer _resizer;
-        private readonly ImageRenamer _imageRenamer;
+        private readonly IImageResizer _resizer;
+        private readonly IImageRenamer _imageRenamer;
         private readonly IProjectFileUpdater _projectFileUpdater;
 
-        public IOSImageResizeService(ImageResizer resizer, ImageRenamer imageRenamer, IProjectFileUpdater projectFileUpdater)
+        public IOSImageResizeService(IImageResizer resizer, IImageRenamer imageRenamer, IProjectFileUpdater projectFileUpdater)
         {
             _resizer = resizer;
             _imageRenamer = imageRenamer;
@@ -58,29 +58,13 @@ namespace IconResizeUtility.Service
 
                     string baseIconName = _imageRenamer.ConvertToValidIconName(file.Name);
 
-                    if (!string.IsNullOrEmpty(prefix))
-                    {
-                        baseIconName = _imageRenamer.AddPrefix(baseIconName, prefix);
-                    }
+                    baseIconName = HandleAddPrefix(prefix, baseIconName);
 
                     if (requiredColors == null || requiredColors.Count <= 1)
                     {
-                        if (postfixSize || requiredSizes.Count > 1)
-                        {
-                            baseIconName = _imageRenamer.AddPostfix(baseIconName, $"_{requiredSize}pt");
-                        }
-
-                        string folderName = $"{Path.GetFileNameWithoutExtension(baseIconName)}.imageset";
-                        string folderPath = Path.Combine(destinationPath, folderName);
-
-                        if (requiredColors != null && requiredColors.Any())
-                        {
-                            CreateIcons(folderPath, resolutionFolders, baseIconName, requiredSize, file, imagesInfo, folderName, requiredColors.First());
-                        }
-                        else
-                        {
-                            CreateIcons(folderPath, resolutionFolders, baseIconName, requiredSize, file, imagesInfo, folderName);
-                        }
+                        baseIconName = HandleAddPostfix(postfixSize, requiredSizes, baseIconName, requiredSize);
+                        
+                        CreateIcons(resolutionFolders, baseIconName, requiredSize, file, imagesInfo, destinationPath, requiredColors?.FirstOrDefault());
                     }
                     else
                     {
@@ -88,23 +72,42 @@ namespace IconResizeUtility.Service
                         {
                             string colorIconName = _imageRenamer.AddPostfix(baseIconName, $"_{color.ColorName}");
 
-                            if (postfixSize || requiredSizes.Count > 1)
-                            {
-                                colorIconName = _imageRenamer.AddPostfix(colorIconName, $"_{requiredSize}pt");
-                            }
+                            colorIconName = HandleAddPostfix(postfixSize, requiredSizes, colorIconName, requiredSize);
 
-                            string folderName = $"{Path.GetFileNameWithoutExtension(colorIconName)}.imageset";
-                            string folderPath = Path.Combine(destinationPath, folderName);
-                            CreateIcons(folderPath, resolutionFolders, colorIconName, requiredSize, file, imagesInfo, folderName, color);
+                            CreateIcons(resolutionFolders, colorIconName, requiredSize, file, imagesInfo, destinationPath, color);
                         }
                     }
                 }
             }
         }
 
-        private void CreateIcons(string folderPath, string[] resolutionFolders, string baseIconName,
-            int requiredSize, FileInfo file, IList<Image> imagesInfo, string folderName, RequiredColor color= null)
+        private string HandleAddPrefix(string prefix, string baseIconName)
         {
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                baseIconName = _imageRenamer.AddPrefix(baseIconName, prefix);
+            }
+
+            return baseIconName;
+        }
+
+        private string HandleAddPostfix(bool postfixSize, IList<int> requiredSizes, string baseIconName, int requiredSize)
+        {
+            if (postfixSize || requiredSizes.Count > 1)
+            {
+                baseIconName = _imageRenamer.AddPostfix(baseIconName, $"_{requiredSize}pt");
+            }
+
+            return baseIconName;
+        }
+
+        private void CreateIcons(string[] resolutionFolders, string baseIconName,
+            int requiredSize, FileInfo file, IList<Image> imagesInfo, string destinationPath, RequiredColor color= null)
+        {
+            string folderName = $"{Path.GetFileNameWithoutExtension(baseIconName)}.imageset";
+            string folderPath = Path.Combine(destinationPath, folderName);
+
+
             EnsureDirectoryExists(folderPath);
 
             foreach (string scaleFactorString in resolutionFolders)
@@ -115,16 +118,8 @@ namespace IconResizeUtility.Service
 
                 int size = (int) (requiredSize * ResNameAssociation[scaleFactorString]);
 
-
-                if (color != null)
-                {
-                    _resizer.Resize(file.FullName, destinationIconPath, size, size, color.ColorHexValue);
-                }
-                else
-                {
-                    _resizer.Resize(file.FullName, destinationIconPath, size, size);
-                }
-
+                _resizer.Resize(file.FullName, destinationIconPath, size, size, color?.ColorHexValue);
+                
                 Image image = new Image
                 {
                     Appearances = new string[] { },

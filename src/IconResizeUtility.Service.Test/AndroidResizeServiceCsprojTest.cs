@@ -8,7 +8,7 @@ namespace IconResizeUtility.Service.Test
     public class AndroidResizeServiceCsprojTest
     {
         private AndroidResultChecker _resultChecker;
-        private AndroidResizeService _service;
+        private DroidResizeService _service;
         private DroidProjectFileUpdater _csprojFileUpdater;
         private ProjectFileTester _csprojFileTester;
 
@@ -60,7 +60,7 @@ namespace IconResizeUtility.Service.Test
             ImageRenamer imageRenamer = new ImageRenamer();
             _resultChecker = new AndroidResultChecker(resizer, imageRenamer);
             _csprojFileUpdater = new DroidProjectFileUpdater();
-            _service = new AndroidResizeService(resizer, imageRenamer, _csprojFileUpdater);
+            _service = new DroidResizeService(resizer, imageRenamer, _csprojFileUpdater);
             _csprojFileTester = new ProjectFileTester(_csprojFileUpdater);
 
             if (Directory.Exists(OutDir))
