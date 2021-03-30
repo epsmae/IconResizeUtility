@@ -20,5 +20,7 @@ namespace IconResizeUtility.App.DataModel
         public string Csproj { get; set; }
 
         public IList<RequiredColor> Colors { get; set; }
+
+        public bool ResizeToValidIconName { get; set; }
     }
 }

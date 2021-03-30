@@ -95,6 +95,17 @@ namespace IconResizeUtility.App.Test
         }
 
         [Test]
+        public void TestResizeWithoutRename()
+        {
+            IList<int> expectedSizes = IOSImageResizeService.DefaultRequiredSizes;
+
+            Program.Main(new[] { "resize", "--doNotRename", "--type", "ios", "--dstFolder", IconDir, "--srcFolder", SrcDataDir, "--prefix", "icon_", "--postfixSize", "false" });
+
+            _iOSResultChecker.AssertIconsExistAndMatchSize(SrcDataDir, IconDir, expectedSizes, true, "icon_", null, false);
+            _iOSResultChecker.AssertIconCount(SrcDataDir, IconDir, expectedSizes);
+        }
+
+        [Test]
         public void TestResizeWithSingleSize()
         {
             IList<int> expectedSizes = new List<int> {42};

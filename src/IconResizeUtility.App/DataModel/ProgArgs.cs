@@ -49,5 +49,11 @@
             get;
             set;
         }
+
+        public bool DoNotRename
+        {
+            get;
+            set;
+        }
     }
 }

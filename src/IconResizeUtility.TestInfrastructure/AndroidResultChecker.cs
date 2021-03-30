@@ -19,7 +19,7 @@ namespace IconResizeUtility.TestInfrastructure
             _imageRenamer = imageRenamer;
         }
 
-        public void AssertIconsExistAndMatchSize(string testDataDir, string outDir, IList<int> expectedResolutions, bool postfixSize, string expectedPrefix, IList<RequiredColor> requiredColors = null)
+        public void AssertIconsExistAndMatchSize(string testDataDir, string outDir, IList<int> expectedResolutions, bool postfixSize, string expectedPrefix, IList<RequiredColor> requiredColors = null, bool convertToValidIconName = true)
         {
             int cnt = 0;
             DirectoryInfo srcFolderInfo = new DirectoryInfo(testDataDir);
@@ -34,7 +34,7 @@ namespace IconResizeUtility.TestInfrastructure
 
                         if (requiredColors == null || requiredColors.Count <= 1)
                         {
-                            string adjustedName = GetIconName(file.Name, postfixSize, expectedPrefix, expectedResolution);
+                            string adjustedName = GetIconName(file.Name, postfixSize, expectedPrefix, expectedResolution, convertToValidIconName);
 
                             string fullImagePath = Path.Combine(outDir, folder, adjustedName);
                             Assert.True(File.Exists(fullImagePath));
@@ -50,7 +50,7 @@ namespace IconResizeUtility.TestInfrastructure
                         {
                             foreach (RequiredColor color in requiredColors)
                             {
-                                string adjustedName = GetIconName(file.Name, postfixSize, expectedPrefix, expectedResolution, color.ColorName);
+                                string adjustedName = GetIconName(file.Name, postfixSize, expectedPrefix, expectedResolution, convertToValidIconName, color.ColorName);
 
                                 string fullImagePath = Path.Combine(outDir, folder, adjustedName);
                                 Assert.True(File.Exists(fullImagePath));
@@ -59,7 +59,6 @@ namespace IconResizeUtility.TestInfrastructure
                                 AssertIconColor(fullImagePath, color);
                             }
                         }
-
                     }
                 }
             }
@@ -107,10 +106,10 @@ namespace IconResizeUtility.TestInfrastructure
         }
 
 
-        private string GetIconName(string iconName, bool postfixSize, string prefix, int size, string colorName = null)
+        private string GetIconName(string iconName, bool postfixSize, string prefix, int size, bool convertToValidIconName, string colorName = null)
         {
 
-            string baseName = _imageRenamer.ConvertToValidIconName(iconName);
+            string baseName = convertToValidIconName ? _imageRenamer.ConvertToValidIconName(iconName): iconName;
 
             if (postfixSize)
             {
