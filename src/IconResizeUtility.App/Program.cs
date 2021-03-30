@@ -55,6 +55,11 @@ namespace IconResizeUtility.App
                 {
                     IsRequired = false,
                     Description = "Optional, single color like \"#55FF5560\" or multiple colors like \"{\"red\":\"#FF0000\",\"green\":\"#00FF00\"}\""
+                },
+                new Option("--doNotRename")
+                {
+                    IsRequired = false,
+                    Description = "Avoid replacing invalid characters in the icon name with an '_'"
                 }
             };
 
@@ -83,7 +88,7 @@ namespace IconResizeUtility.App
             printer.PrintArguments(args);
 
             IIconResizeUtilityService utilityService = serviceProvider.GetService<IIconResizeUtilityService>();
-            utilityService.Resize(args.SourceFolder, args.DestinationFolder, args.Csproj, args.PostfixSize, args.Prefix, args.Sizes, args.Colors);
+            utilityService.Resize(args.SourceFolder, args.DestinationFolder, args.Csproj, args.PostfixSize, args.Prefix, args.Sizes, args.Colors, args.ResizeToValidIconName);
         }
 
         private static void AddResizeService(IServiceCollection serviceCollection, EPlatforms platform)

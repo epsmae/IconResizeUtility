@@ -43,7 +43,7 @@ namespace IconResizeUtility.Service
             _projectFileUpdater = projectFileUpdater;
         }
         
-        public void Resize(string sourcePath, string destinationPath, bool postfixSize, string prefix, IList<int> requiredSizes, IList<RequiredColor> requiredColors = null)
+        public void Resize(string sourcePath, string destinationPath, bool postfixSize, string prefix, IList<int> requiredSizes, bool convertToValidIconName = true, IList<RequiredColor> requiredColors = null)
         {
             string[] resolutionFolders = ResFolderAssociation.Keys.ToArray();
 
@@ -55,7 +55,7 @@ namespace IconResizeUtility.Service
             {
                 foreach (string resolutionFolder in resolutionFolders)
                 {
-                    string baseIconName = _imageRenamer.ConvertToValidIconName(file.Name);
+                    string baseIconName = convertToValidIconName ? _imageRenamer.ConvertToValidIconName(file.Name) : file.Name;
 
                     string path = Path.Combine(destinationPath, resolutionFolder);
 

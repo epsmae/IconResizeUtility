@@ -30,6 +30,9 @@
     <None Update="TestData\material_icon_bug.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestData\ma.terial_$icon!_build.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\material_icon_build.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -19,7 +19,7 @@ namespace IconResizeUtility.TestInfrastructure
             _imageRenamer = imageRenamer;
         }
 
-        public void AssertIconsExistAndMatchSize(string testDataDir, string outDir, IList<int> expectedResolutions, bool postfixSize, string expectedPrefix, IList<RequiredColor> requiredColors = null)
+        public void AssertIconsExistAndMatchSize(string testDataDir, string outDir, IList<int> expectedResolutions, bool postfixSize, string expectedPrefix, IList<RequiredColor> requiredColors = null, bool convertToValidIconName = true)
         {
             int cnt = 0;
             DirectoryInfo srcFolderInfo = new DirectoryInfo(testDataDir);
@@ -33,7 +33,7 @@ namespace IconResizeUtility.TestInfrastructure
                     {
                         int expectedSize = (int)(expectedResolution * IOSImageResizeService.ResNameAssociation[scaleFactor]);
 
-                        AssertContainsIconSize(outDir, scaleFactor, file.Name, postfixSize, expectedPrefix, expectedResolution, expectedSize, requiredColors);
+                        AssertContainsIconSize(outDir, scaleFactor, file.Name, postfixSize, expectedPrefix, expectedResolution, expectedSize, convertToValidIconName, requiredColors);
                     }
                 }
             }
@@ -64,9 +64,9 @@ namespace IconResizeUtility.TestInfrastructure
             Assert.AreEqual(expectedCount, iconCount);
         }
 
-        private void AssertContainsIconSize(string outputDirectory, string scaleFactor, string iconName, bool postfixSize, string prefix, int size, int expectedSize, IList<RequiredColor> requiredColors = null)
+        private void AssertContainsIconSize(string outputDirectory, string scaleFactor, string iconName, bool postfixSize, string prefix, int size, int expectedSize, bool convertToValidIconName, IList<RequiredColor> requiredColors = null)
         {
-            string adjustedName = GetIconName(iconName, postfixSize, prefix, size);
+            string adjustedName = GetIconName(iconName, prefix, convertToValidIconName);
             
             if (requiredColors == null || requiredColors.Count == 1)
             {
@@ -131,9 +131,9 @@ namespace IconResizeUtility.TestInfrastructure
             Assert.True(jsonContent.Contains(iconName));
         }
 
-        private string GetIconName(string iconName, bool postfixSize, string prefix, int size)
+        private string GetIconName(string iconName, string prefix, bool convertToValidIconName)
         {
-            string baseName = _imageRenamer.ConvertToValidIconName(iconName);
+            string baseName = convertToValidIconName ? _imageRenamer.ConvertToValidIconName(iconName): iconName;
             
             if (!string.IsNullOrEmpty(prefix))
             {

@@ -58,6 +58,19 @@ namespace IconResizeUtility.Service.Test
         }
 
         [Test]
+        public void TestResizeWithoutRename()
+        {
+            IList<int> expectedResolutions = DroidResizeService.DefaultRequiredSizes;
+            string expectedPrefix = "ic_";
+            const bool postFixSize = true;
+
+            _service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions, false);
+
+            _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix, null, false);
+            _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
+        }
+
+        [Test]
         public void TestResizeWithoutPrefix()
         {
             IList<int> expectedResolutions = DroidResizeService.DefaultRequiredSizes;
@@ -99,7 +112,7 @@ namespace IconResizeUtility.Service.Test
                 }
             };
 
-            _service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions, colors);
+            _service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions, true, colors);
 
             _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix, colors);
             _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions);
@@ -136,7 +149,7 @@ namespace IconResizeUtility.Service.Test
                 }
             };
 
-            _service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions, colors);
+            _service.Resize(SrcDataDir, OutDir, postFixSize, expectedPrefix, expectedResolutions, true, colors);
 
             _resultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutDir, expectedResolutions, postFixSize, expectedPrefix, colors);
             _resultChecker.AssertIconCount(SrcDataDir, OutDir, expectedResolutions, colors);

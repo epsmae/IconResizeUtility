@@ -5,6 +5,6 @@ namespace IconResizeUtility.Service
 {
     public interface IImageResizeService
     {
-        void Resize(string sourcePath, string destinationPath, bool postfixSize, string prefix, IList<int> requiredSizes, IList<RequiredColor> requiredColors = null);
+        void Resize(string sourcePath, string destinationPath, bool postfixSize, string prefix, IList<int> requiredSizes, bool convertToValidIconName = true, IList<RequiredColor> requiredColors = null);
     }
 }

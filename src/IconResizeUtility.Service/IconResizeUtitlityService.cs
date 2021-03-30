@@ -14,10 +14,10 @@ namespace IconResizeUtility.Service
             _projectFileUpdater = projectFileUpdater;
         }
 
-        public void Resize(string srcFolder, string dstFolder, string csproj, bool postfixSize, string prefix, List<int> sizeList, IList<RequiredColor> colors)
+        public void Resize(string srcFolder, string dstFolder, string csproj, bool postfixSize, string prefix, List<int> sizeList, IList<RequiredColor> colors, bool convertToValidIconName = true)
         {
             _projectFileUpdater.LoadProjectFile(csproj);
-            _resizeService.Resize(srcFolder, dstFolder, postfixSize, prefix, sizeList, colors);
+            _resizeService.Resize(srcFolder, dstFolder, postfixSize, prefix, sizeList, convertToValidIconName, colors);
             _projectFileUpdater.Save(csproj);
         }
     }
