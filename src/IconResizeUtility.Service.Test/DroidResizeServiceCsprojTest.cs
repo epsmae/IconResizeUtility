@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace IconResizeUtility.Service.Test
 {
-    public class AndroidResizeServiceCsprojTest
+    public class DroidResizeServiceCsprojTest
     {
         private AndroidResultChecker _resultChecker;
         private DroidResizeService _service;

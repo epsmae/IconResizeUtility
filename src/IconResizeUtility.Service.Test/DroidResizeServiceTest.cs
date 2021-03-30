@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using IconResizeUtility.Service.DataModel;
 using IconResizeUtility.TestInfrastructure;
@@ -7,7 +6,7 @@ using NUnit.Framework;
 
 namespace IconResizeUtility.Service.Test
 {
-    public class AndroidResizeServiceTest
+    public class DroidResizeServiceTest
     {
         private AndroidResultChecker _resultChecker;
         private DroidResizeService _service;
