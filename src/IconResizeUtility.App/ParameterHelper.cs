@@ -20,7 +20,8 @@ namespace IconResizeUtility.App
                 Csproj = progArgs.Csproj,
                 Sizes = ParseSizes(progArgs.IconSize, GetPlatform(progArgs.Type)),
                 Colors = ParseColors(progArgs.Color),
-                ResizeToValidIconName = ! progArgs.DoNotRename
+                ResizeToValidIconName = ! progArgs.DoNotRename,
+                UseCache = progArgs.UseCache
             };
         }
 

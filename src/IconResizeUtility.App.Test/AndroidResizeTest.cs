@@ -110,6 +110,17 @@ namespace IconResizeUtility.App.Test
         }
 
         [Test]
+        public void TestResizeUseCache()
+        {
+            IList<int> expectedSizes = DroidResizeService.DefaultRequiredSizes;
+
+            Program.Main(new[] { "resize", "--useCache", "--type", "droid", "--dstFolder", OutIconDir, "--srcFolder", SrcDataDir, "--prefix", "icon_", "--postfixSize", "false" });
+
+            _androidResultChecker.AssertIconsExistAndMatchSize(SrcDataDir, OutIconDir, expectedSizes, true, "icon_");
+            _androidResultChecker.AssertIconCount(SrcDataDir, OutIconDir, expectedSizes);
+        }
+
+        [Test]
         public void TestResizeWithSingleSize()
         {
             IList<int> expectedSizes = new List<int> {42};

@@ -22,5 +22,7 @@ namespace IconResizeUtility.App.DataModel
         public IList<RequiredColor> Colors { get; set; }
 
         public bool ResizeToValidIconName { get; set; }
+
+        public bool UseCache { get; set; }
     }
 }

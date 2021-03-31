@@ -55,5 +55,11 @@
             get;
             set;
         }
+
+        public bool UseCache
+        {
+            get;
+            set;
+        }
     }
 }
