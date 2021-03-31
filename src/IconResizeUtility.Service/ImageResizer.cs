@@ -1,10 +1,31 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using SkiaSharp;
 
 namespace IconResizeUtility.Service
 {
     public class ImageResizer : IImageResizer
     {
+        public ImageResizer()
+        {
+            _cachedItems = new List<CacheItem>();
+        }
+
+        private bool _useCache;
+        
+
+        private IList<CacheItem> _cachedItems;
+
+        public bool UseCache
+        {
+            get => _useCache;
+            set => _useCache = value;
+        }
+
+        public IList<CacheItem> CachedItems => _cachedItems;
+
+
         /// <summary>
         /// Resize an image
         /// </summary>
@@ -15,28 +36,60 @@ namespace IconResizeUtility.Service
         /// <param name="hexColor">Hex color code e.g. "#335566FF"</param>
         public void Resize(string srcImagePath, string dstImagePath, int width, int height, string hexColor = null)
         {
-            using (FileStream srcStream = File.OpenRead(srcImagePath))
+            //CacheItem cachedItem = TryGetCachedItem(srcImagePath, width, height, hexColor);
+
+            if (_useCache && TryGetCachedItem(srcImagePath, width, height, hexColor, out CacheItem cachedItem))
             {
-                using (SKBitmap srcBitmap = SKBitmap.Decode(srcStream))
+                File.Copy(cachedItem.Path, dstImagePath, true);
+            }
+            else
+            {
+                using (FileStream srcStream = File.OpenRead(srcImagePath))
                 {
-                    using (SKBitmap resizedBitmap = srcBitmap.Resize(new SKSizeI(width, height), SKFilterQuality.Medium))
+                    using (SKBitmap srcBitmap = SKBitmap.Decode(srcStream))
                     {
-                        if (string.IsNullOrEmpty(hexColor))
+                        using (SKBitmap resizedBitmap = srcBitmap.Resize(new SKSizeI(width, height), SKFilterQuality.Medium))
                         {
-                            SaveImage(dstImagePath, resizedBitmap);
-                        }
-                        else
-                        {
-                            using (SKBitmap tintedBitmap = TintBitmap(resizedBitmap, hexColor))
+                            if (string.IsNullOrEmpty(hexColor))
                             {
-                                SaveImage(dstImagePath, tintedBitmap);
+                                SaveImage(dstImagePath, resizedBitmap);
+                            }
+                            else
+                            {
+                                using (SKBitmap tintedBitmap = TintBitmap(resizedBitmap, hexColor))
+                                {
+                                    SaveImage(dstImagePath, tintedBitmap);
+                                }
                             }
                         }
                     }
                 }
+
+                if (_useCache)
+                {
+                    _cachedItems.Add(new CacheItem
+                    {
+                        Name = Path.GetFileName(srcImagePath),
+                        HexColor = hexColor,
+                        Width = width,
+                        Height = height,
+                        Path = dstImagePath
+                    });
+
+                }
             }
         }
-        
+
+        private bool TryGetCachedItem(string srcImagePath, int width, int height, string hexColor, out CacheItem item)
+        {
+            item = _cachedItems.FirstOrDefault(item => item.Name == Path.GetFileName(srcImagePath)
+                                                 && item.Width == width
+                                                 && item.Height == height
+                                                 && item.HexColor == hexColor);
+
+            return item != null;
+        }
+
         public ImageInfo GetInfo(string srcImagePath)
         {
             using (FileStream srcStream = File.OpenRead(srcImagePath))

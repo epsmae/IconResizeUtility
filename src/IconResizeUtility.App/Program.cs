@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.Diagnostics;
 using IconResizeUtility.App.DataModel;
 using IconResizeUtility.Service;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,6 +61,11 @@ namespace IconResizeUtility.App
                 {
                     IsRequired = false,
                     Description = "Avoid replacing invalid characters in the icon name with an '_'"
+                },
+                new Option("--useCache")
+                {
+                    IsRequired = false,
+                    Description = "Use cache to improve resize performance"
                 }
             };
 
@@ -87,8 +93,17 @@ namespace IconResizeUtility.App
             IArgumentsPrinter printer = serviceProvider.GetService<IArgumentsPrinter>();
             printer.PrintArguments(args);
 
+            IImageResizer resizer = serviceProvider.GetService<IImageResizer>();
+            resizer.UseCache = args.UseCache;
+
             IIconResizeUtilityService utilityService = serviceProvider.GetService<IIconResizeUtilityService>();
+            ILogger<Program> logger = serviceProvider.GetService<ILogger<Program>>();
+
+            logger.LogInformation("Starting resize...");
+            Stopwatch watch = Stopwatch.StartNew();
             utilityService.Resize(args.SourceFolder, args.DestinationFolder, args.Csproj, args.PostfixSize, args.Prefix, args.Sizes, args.Colors, args.ResizeToValidIconName);
+            watch.Stop();
+            logger.LogInformation($"Resize done, duration={watch.ElapsedMilliseconds}ms");
         }
 
         private static void AddResizeService(IServiceCollection serviceCollection, EPlatforms platform)

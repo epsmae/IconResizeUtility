@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using IconResizeUtility.TestInfrastructure;
 using NUnit.Framework;
 using SkiaSharp;
@@ -97,6 +98,16 @@ namespace IconResizeUtility.Service.Test
             SKColor actualColor = TestColorHelper.GetAverageColor(DestinationIcon);
 
             TestColorHelper.AssertSameColor(expectedColor, actualColor);
+        }
+
+        [Test]
+        public void TestUseCache()
+        {
+            ImageResizer resizer = new ImageResizer();
+            resizer.UseCache = true;
+            resizer.Resize(TestIcon, DestinationIcon, 48, 48);
+
+            Assert.True(resizer.CachedItems.Any(items => items.Name == Path.GetFileName(TestIcon)));
         }
     }
 }

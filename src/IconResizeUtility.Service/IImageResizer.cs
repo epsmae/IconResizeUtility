@@ -1,4 +1,6 @@
-﻿namespace IconResizeUtility.Service
+﻿using System.Collections.Generic;
+
+namespace IconResizeUtility.Service
 {
     public interface IImageResizer
     {
@@ -13,5 +15,7 @@
         void Resize(string srcImagePath, string dstImagePath, int width, int height, string hexColor = null);
 
         ImageInfo GetInfo(string srcImagePath);
+
+        bool UseCache { get; set; }
     }
 }
